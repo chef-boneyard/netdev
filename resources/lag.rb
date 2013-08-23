@@ -26,6 +26,9 @@ attribute :minimum_links,   :kind_of => Integer
 attribute :lacp,            :kind_of => String, :equal_to => ['disable', 'active', 'passive']
 attribute :active,          :kind_of => [TrueClass, FalseClass], :default => true
 
+identity_attr :name
+state_attrs :links, :minimum_links, :lacp
+
 attr_accessor :exists
 
 include Netdev::Resource::Common

@@ -29,6 +29,9 @@ attribute :speed,         :kind_of => String, :equal_to => ['auto', '100m', '1g'
 attribute :duplex,        :kind_of => String, :equal_to => ['auto', 'half', 'full']
 attribute :active,        :kind_of => [TrueClass, FalseClass], :default => true
 
+identity_attr :name
+state_attrs :admin, :description, :mtu, :speed, :duplex
+
 attr_accessor :exists
 
 include Netdev::Resource::Common
