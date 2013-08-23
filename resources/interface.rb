@@ -30,3 +30,5 @@ attribute :duplex,        :kind_of => String, :equal_to => ['auto', 'half', 'ful
 attribute :active,        :kind_of => [TrueClass, FalseClass], :default => true
 
 attr_accessor :exists
+
+include Netdev::Resource::Common

@@ -26,3 +26,5 @@ attribute :description,   :kind_of => String
 attribute :active,        :kind_of => [TrueClass, FalseClass], :default => true
 
 attr_accessor :exists
+
+include Netdev::Resource::Common

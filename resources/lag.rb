@@ -27,3 +27,5 @@ attribute :lacp,            :kind_of => String, :equal_to => ['disable', 'active
 attribute :active,          :kind_of => [TrueClass, FalseClass], :default => true
 
 attr_accessor :exists
+
+include Netdev::Resource::Common

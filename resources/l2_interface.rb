@@ -29,3 +29,5 @@ attribute :vlan_tagging,    :kind_of => String, :equal_to => ['enable', 'disable
 attribute :active,          :kind_of => [TrueClass, FalseClass], :default => true
 
 attr_accessor :exists
+
+include Netdev::Resource::Common
