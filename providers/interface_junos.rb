@@ -28,26 +28,22 @@ use_inline_resources
 action :create do
   updated_values = junos_client.updated_changed_properties(new_resource.state,
                                                            current_resource.state)
-
-  message  = "create interface #{new_resource.name} with values:"
-  message << " #{updated_values.map{|e| e.join(" => ")}.join(", ")}"
-
-  converge_by(message) do
-    junos_client.commit!
-    Chef::Log.debug("#{new_resource} wrote and committed configuration changes")
+  unless updated_values.empty?
+    message  = "create interface #{new_resource.name} with values:"
+    message << " #{updated_values.map{|e| e.join(" => ")}.join(", ")}"
+    converge_by(message) do
+      junos_client.write!
+    end
   end
-
-  # Chef::Log.info("#{new_resource} created")
 end
 
 action :delete do
-  if current_resource.exists
-    converge_by("remove interface #{new_resource.name}") do
+  if current_resource.exists?
+    converge_by("delete existing interface #{new_resource.name}") do
       junos_client.delete!
-      Chef::Log.info("#{new_resource} deleted")
     end
-  else
-    Chef::Log.debug("#{new_resource} does not exist - nothing to do")
+  end
+end
 
 action :enable do
   if current_resource.exists? && !current_resource.active?
