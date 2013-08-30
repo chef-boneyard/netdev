@@ -46,6 +46,20 @@ action :delete do
     end
   else
     Chef::Log.debug("#{new_resource} does not exist - nothing to do")
+
+action :enable do
+  if current_resource.exists? && !current_resource.active?
+    converge_by("enable vlan #{new_resource.name}") do
+      junos_client.activate!
+    end
+  end
+end
+
+action :disable do
+  if current_resource.exists? && current_resource.active?
+    converge_by("disable vlan #{new_resource.name}") do
+      junos_client.deactivate!
+    end
   end
 end
 
