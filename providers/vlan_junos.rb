@@ -54,16 +54,18 @@ def load_current_resource
 
   @current_resource = Chef::Resource::NetdevVlan.new(new_resource.name)
 
-  if vlan = node['netdev']['vlan'][new_resource.name]
-    @current_resource.vlan_id(vlan['vlan_id'])
-    @current_resource.description(vlan['description'])
+  if (vlan = junos_client.managed_resource) && vlan.exists?
+    @current_resource.vlan_id(vlan[:vlan_id])
+    @current_resource.description(vlan[:description])
+    @current_resource.active = vlan[:_active]
     @current_resource.exists = true
   else
     # Validation forces us to set something here
     @current_resource.vlan_id(-1)
+    @current_resource.active = false
     @current_resource.exists = false
   end
-
+  @current_resource
 end
 
 private

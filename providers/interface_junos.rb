@@ -56,18 +56,18 @@ def load_current_resource
 
   @current_resource = Chef::Resource::NetdevInterface.new(new_resource.name)
 
-  if port = node['netdev']['l1_ports'][new_resource.name]
-    @current_resource.admin(port['admin'].to_s)
-    @current_resource.description(port['description'])
-    @current_resource.mtu(port['mtu'])
-    @current_resource.speed(port['speed'].to_s)
-    @current_resource.duplex(port['duplex'].to_s)
-    @current_resource.active(port['_active'])
+  if (port = junos_client.managed_resource) && port.exists?
+    @current_resource.admin(port[:admin].to_s)
+    @current_resource.description(port[:description])
+    @current_resource.mtu(port[:mtu])
+    @current_resource.speed(port[:speed].to_s)
+    @current_resource.duplex(port[:duplex].to_s)
+    @current_resource.active = port[:_active]
     @current_resource.exists = true
   else
+    @current_resource.active = false
     @current_resource.exists = false
   end
-
   @current_resource
 end
 
