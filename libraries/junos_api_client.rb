@@ -85,14 +85,31 @@ module Netdev
     def write!
       with_safe_commit do
         managed_resource.write!
+        Chef::Log.debug("#{self.to_s} wrote and committed configuration changes")
       end
     end
 
-    # Removes managed resource form configuration and commits the
-    # change.
+    # Removes managed resource and commits the change.
     def delete!
       with_safe_commit do
         managed_resource.delete!
+        Chef::Log.debug("#{self.to_s} deleted resource")
+      end
+    end
+
+    # Activate managed resource and commits the change.
+    def activate!
+      with_safe_commit do
+        managed_resource.activate!
+        Chef::Log.debug("#{self.to_s} activated resource")
+      end
+    end
+
+    # Deactivate managed resource and commits the change.
+    def deactivate!
+      with_safe_commit do
+        managed_resource.deactivate!
+        Chef::Log.debug("#{self.to_s} deactivated resource")
       end
     end
 
@@ -128,6 +145,10 @@ module Netdev
       managed_resource.should
     end
 
+    def managed_resource
+      @managed_resource ||= transport.send(resource_type)[resource_name]
+    end
+
     def to_s
       "#{self.class.to_s}[#{resource_name}]"
     end
@@ -156,10 +177,6 @@ module Netdev
 
         transport
       end
-    end
-
-    def managed_resource
-      @managed_resource ||= transport.send(resource_type)[resource_name]
     end
 
     # If processing the block of code passed in is successful config
