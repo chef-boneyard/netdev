@@ -21,6 +21,10 @@ module Netdev
   module Resource
     module Common
 
+      attr_accessor :active, :exists
+      alias_method :active?, :active
+      alias_method :exists?, :exists
+
       # Override intializer and replace with a version that performs
       # late binding of a provider based on node platform.
       def initialize(name, run_context=nil)

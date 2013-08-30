@@ -26,11 +26,8 @@ attribute :description,     :kind_of => String
 attribute :untagged_vlan,   :kind_of => String
 attribute :tagged_vlans,    :kind_of => Array
 attribute :vlan_tagging,    :kind_of => String, :equal_to => ['enable', 'disable']
-attribute :active,          :kind_of => [TrueClass, FalseClass], :default => true
 
 identity_attr :name
 state_attrs :description, :untagged_vlan, :tagged_vlans, :vlan_tagging
-
-attr_accessor :exists
 
 include Netdev::Resource::Common

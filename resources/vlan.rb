@@ -23,11 +23,8 @@ default_action :create
 attribute :name,          :kind_of => String, :name_attribute => true
 attribute :vlan_id,       :kind_of => Integer, :required => true
 attribute :description,   :kind_of => String
-attribute :active,        :kind_of => [TrueClass, FalseClass], :default => true
 
 identity_attr :name
 state_attrs :vlan_id, :description
-
-attr_accessor :exists
 
 include Netdev::Resource::Common
