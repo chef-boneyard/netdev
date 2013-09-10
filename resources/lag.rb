@@ -23,7 +23,7 @@ default_action :create
 attribute :name,            :kind_of => String, :name_attribute => true, :required => true
 attribute :links,           :kind_of => Array
 attribute :minimum_links,   :kind_of => Integer
-attribute :lacp,            :kind_of => String, :equal_to => ['disable', 'active', 'passive']
+attribute :lacp,            :kind_of => String, :equal_to => %w{ disable active passive }
 
 identity_attr :name
 state_attrs :links, :minimum_links, :lacp
