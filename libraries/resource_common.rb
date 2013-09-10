@@ -29,10 +29,20 @@ module Netdev
       # late binding of a provider based on node platform.
       def initialize(name, run_context=nil)
         super
-        # It is entirely possible we will not have a node object. This
-        # happens when a resource is instantiated in a provider's
-        # `#load_current_resource` method.
-        if platform = (node && node['platform'])
+
+        platform = begin
+          # We need to update core Ohai to properly identify EOS
+          if File.exist?("/etc/Eos-release")
+            "eos"
+          # It is entirely possible we will not have a node object. This
+          # happens when a resource is instantiated in a provider's
+          # `#load_current_resource` method.
+          elsif node
+            node['platform']
+          end
+        end
+
+        if platform
           @provider = platform_provider_for_resource(self.class.resource_name,
                                                      platform)
         end
