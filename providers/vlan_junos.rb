@@ -19,10 +19,6 @@
 # limitations under the License.
 #
 
-def whyrun_supported?
-  true
-end
-
 use_inline_resources
 
 action :create do
@@ -78,6 +74,10 @@ def load_current_resource
     @current_resource.exists = false
   end
   @current_resource
+end
+
+def whyrun_supported?
+  true
 end
 
 private
