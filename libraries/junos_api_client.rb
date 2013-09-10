@@ -185,6 +185,9 @@ module Netdev
     def with_safe_commit(&block)
       begin
 
+        # TODO: make transaction global to Chef run
+        transport.config.lock!
+
         yield
 
         # Next we commit all configuration changes.
@@ -193,10 +196,11 @@ module Netdev
           Chef::Log.debug("#{self.to_s} committed configuration changes")
         end
 
+        transport.config.unlock!
+
       rescue Netconf::RpcError => e
         Chef::Log.error(format_rpc_error(e))
         transport.config.rollback!
-        transport.config.commit!
         raise e
       end
     end
