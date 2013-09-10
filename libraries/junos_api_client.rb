@@ -162,7 +162,7 @@ module Netdev
     #
     # @return [Netconf::Junos::IOProc] intialized transport instance
     def transport
-      @transport || begin
+      @transport ||= begin
         # Create a connection to the NETCONF service
         transport = Netconf::IOProc.new
         transport.open
