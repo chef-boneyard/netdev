@@ -17,12 +17,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-actions :create, :delete
+actions :create, :delete, :enable, :disable
 default_action :create
 
 attribute :name,          :kind_of => String, :name_attribute => true
 attribute :vlan_id,       :kind_of => Integer, :required => true
 attribute :description,   :kind_of => String
-attribute :active,        :kind_of => [TrueClass, FalseClass], :default => true
 
-attr_accessor :exists
+identity_attr :name
+state_attrs :vlan_id, :description
+
+include Netdev::Resource::Common
