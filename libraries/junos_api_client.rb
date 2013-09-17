@@ -146,7 +146,12 @@ module Netdev
     end
 
     def managed_resource
-      @managed_resource ||= transport.send(resource_type)[resource_name]
+      @managed_resource ||= begin
+        transport.send(resource_type)[resource_name]
+      rescue Netconf::RpcError => e
+        Chef::Log.debug("Managed Resource #{resource_name} not found: #{e}")
+        nil
+      end
     end
 
     def to_s
