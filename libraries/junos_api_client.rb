@@ -48,7 +48,7 @@ module Netdev
 
     # The `Junos::Ez` providers expect certain values
     # to be symbolized or requests will fail.
-    VALUES_TO_SYMBOLIZE = %w{ auto up down half full }
+    VALUES_TO_SYMBOLIZE = %w{ auto up down half full active passive disabled }
 
     attr_reader :resource_type
     attr_reader :resource_name
