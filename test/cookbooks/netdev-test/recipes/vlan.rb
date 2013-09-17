@@ -23,6 +23,6 @@ netdev_vlan "chef-test" do
   action :create
 end
 
-netdev_vlan "chef-test" do
-  action :delete
-end
+# netdev_vlan "chef-test" do
+#   action :delete
+# end

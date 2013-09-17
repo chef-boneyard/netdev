@@ -29,3 +29,11 @@ netdev_l2_interface "ge-0/0/0" do
   vlan_tagging true
   action :create
 end
+
+# netdev_l2_interface "ge-0/0/0" do
+#   action :delete
+# end
+
+# netdev_vlan "foobar" do
+#   action :delete
+# end
