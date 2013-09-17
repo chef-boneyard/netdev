@@ -18,14 +18,16 @@
 # limitations under the License.
 #
 
-actions :create, :delete
+actions :create, :delete, :enable, :disable
 default_action :create
 
 attribute :name,            :kind_of => String, :name_attribute => true, :required => true
 attribute :description,     :kind_of => String
 attribute :untagged_vlan,   :kind_of => String
 attribute :tagged_vlans,    :kind_of => Array
-attribute :vlan_tagging,    :kind_of => String, :equal_to => ['enable', 'disable']
-attribute :active,          :kind_of => [TrueClass, FalseClass], :default => true
+attribute :vlan_tagging,    :kind_of => [TrueClass, FalseClass]
 
-attr_accessor :exists
+identity_attr :name
+state_attrs :description, :untagged_vlan, :tagged_vlans, :vlan_tagging
+
+include Netdev::Resource::Common

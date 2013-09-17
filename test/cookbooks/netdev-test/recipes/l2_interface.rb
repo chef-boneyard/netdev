@@ -1,9 +1,8 @@
 #
-# Cookbook Name:: netdev
-# Resource:: lag
+# Author:: Seth Chisamore <schisamo@opscode.com>
 #
-# Copyright 2013 Arista Networks
-# Copyright 2013 Opscode, Inc.
+# Copyright:: Copyright (c) 2013 Opscode, Inc.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,15 +16,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-actions :create, :delete, :enable, :disable
-default_action :create
 
-attribute :name,            :kind_of => String, :name_attribute => true, :required => true
-attribute :links,           :kind_of => Array
-attribute :minimum_links,   :kind_of => Integer
-attribute :lacp,            :kind_of => String, :equal_to => %w{ disable active passive }
+netdev_vlan "foobar" do
+  vlan_id 3
+  description "Ain't no party like a vlan party!"
+  action :create
+end
 
-identity_attr :name
-state_attrs :links, :minimum_links, :lacp
+netdev_l2_interface "ge-0/0/0" do
+  description "All your l2 interfaces are belong to Chef"
+  tagged_vlans %w{ foobar }
+  vlan_tagging true
+  action :create
+end
 
-include Netdev::Resource::Common
+# netdev_l2_interface "ge-0/0/0" do
+#   action :delete
+# end
+
+# netdev_vlan "foobar" do
+#   action :delete
+# end

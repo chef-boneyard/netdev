@@ -18,15 +18,17 @@
 # limitations under the License.
 #
 
-actions :create, :delete
+actions :create, :delete, :enable, :disable
 default_action :create
 
 attribute :name,          :kind_of => String, :name_attribute => true, :required => true
-attribute :admin,         :kind_of => String, :equal_to => ['up', 'down']
+attribute :admin,         :kind_of => String, :equal_to => %w{ up down }
 attribute :description,   :kind_of => String
 attribute :mtu,           :kind_of => Integer
-attribute :speed,         :kind_of => String, :equal_to => ['auto', '100m', '1g', '10g']
-attribute :duplex,        :kind_of => String, :equal_to => ['auto', 'half', 'full']
-attribute :active,        :kind_of => [TrueClass, FalseClass], :default => true
+attribute :speed,         :kind_of => String, :equal_to => %w{ auto 100m 1g 10g }
+attribute :duplex,        :kind_of => String, :equal_to => %w{ auto half full }
 
-attr_accessor :exists
+identity_attr :name
+state_attrs :admin, :description, :mtu, :speed, :duplex
+
+include Netdev::Resource::Common

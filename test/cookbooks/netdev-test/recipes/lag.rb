@@ -1,9 +1,8 @@
 #
-# Cookbook Name:: netdev
-# Resource:: lag
+# Author:: Seth Chisamore <schisamo@opscode.com>
 #
-# Copyright 2013 Arista Networks
-# Copyright 2013 Opscode, Inc.
+# Copyright:: Copyright (c) 2013 Opscode, Inc.
+# License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,15 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-actions :create, :delete, :enable, :disable
-default_action :create
 
-attribute :name,            :kind_of => String, :name_attribute => true, :required => true
-attribute :links,           :kind_of => Array
-attribute :minimum_links,   :kind_of => Integer
-attribute :lacp,            :kind_of => String, :equal_to => %w{ disable active passive }
+netdev_lag "ae0" do
+  links %w{ ge-0/0/1 ge-0/0/2 }
+  minimum_links 1
+  lacp "disable"
+  action :create
+end
 
-identity_attr :name
-state_attrs :links, :minimum_links, :lacp
-
-include Netdev::Resource::Common
+# netdev_lag "ae0" do
+#   action :delete
+# end
