@@ -22,13 +22,13 @@ actions :create, :delete
 default_action :create
 
 attribute :name,          :kind_of => String, :name_attribute => true, :required => true
-attribute :admin,         :kind_of => String, :equal_to => %w{ up down }
+attribute :enable,        :kind_of => [TrueClass, FalseClass], :default => true
 attribute :description,   :kind_of => String
 attribute :mtu,           :kind_of => Integer
 attribute :speed,         :kind_of => String, :equal_to => %w{ auto 100m 1g 10g 40g 56g 100g }
 attribute :duplex,        :kind_of => String, :equal_to => %w{ auto half full }
 
 identity_attr :name
-state_attrs :admin, :description, :mtu, :speed, :duplex
+state_attrs :enable, :description, :mtu, :speed, :duplex
 
 include Netdev::Resource::Common
