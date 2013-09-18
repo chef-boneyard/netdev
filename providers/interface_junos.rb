@@ -41,22 +41,6 @@ action :delete do
   end
 end
 
-action :enable do
-  if current_resource.exists? && !current_resource.active?
-    converge_by("enable interface #{new_resource.name}") do
-      junos_client.activate!
-    end
-  end
-end
-
-action :disable do
-  if current_resource.exists? && current_resource.active?
-    converge_by("disable interface #{new_resource.name}") do
-      junos_client.deactivate!
-    end
-  end
-end
-
 def load_current_resource
   Chef::Log.info "Loading current resource #{new_resource.name}"
 
