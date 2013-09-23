@@ -80,5 +80,5 @@ end
 private
 
 def junos_client
-  @junos_client ||= Netdev::JunosApiClient::L1ports.new(new_resource.name)
+  @junos_client ||= Netdev::Junos::ApiClient::L1ports.new(new_resource.name)
 end
