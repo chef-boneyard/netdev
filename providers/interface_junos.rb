@@ -22,8 +22,14 @@
 use_inline_resources
 
 action :create do
-  updated_values = junos_client.updated_changed_properties(new_resource.state,
-                                                           current_resource.state)
+  new_values = new_resource.state
+  current_values = current_resource.state
+
+  new_values[:admin] = new_values.delete(:enable) ? :up : :down
+  current_values[:admin] = current_values.delete(:enable) ? :up : :down
+
+  updated_values = junos_client.updated_changed_properties(new_values,
+                                                           current_values)
   unless updated_values.empty?
     message  = "create interface #{new_resource.name} with values:"
     message << " #{updated_values.map{|e| e.join(" => ")}.join(", ")}"
@@ -41,29 +47,19 @@ action :delete do
   end
 end
 
-action :enable do
-  if current_resource.exists? && !current_resource.active?
-    converge_by("enable interface #{new_resource.name}") do
-      junos_client.activate!
-    end
-  end
-end
-
-action :disable do
-  if current_resource.exists? && current_resource.active?
-    converge_by("disable interface #{new_resource.name}") do
-      junos_client.deactivate!
-    end
-  end
-end
-
 def load_current_resource
   Chef::Log.info "Loading current resource #{new_resource.name}"
 
   @current_resource = Chef::Resource::NetdevInterface.new(new_resource.name)
 
   if (port = junos_client.managed_resource) && port.exists?
-    @current_resource.admin(port[:admin].to_s)
+
+    if port[:admin] == :up
+      @current_resource.enable(true)
+    elsif port[:admin] == :down
+      @current_resource.enable(false)
+    end
+
     @current_resource.description(port[:description])
     @current_resource.mtu(port[:mtu])
     @current_resource.speed(port[:speed].to_s)
