@@ -34,13 +34,15 @@ module Netdev
       include Singleton
       extend Forwardable
 
+      attr_accessor :connection_open
+      attr_accessor :transaction_open
+
       def_delegator :@transport, :[]
 
       ApiClient::KNOWN_RESOURCES.keys.each do |resource|
         def_delegator :@transport, resource.to_sym
       end
 
-      def_delegator :@transport_config, :lock!
       def_delegator :@transport_config, :unlock!
       def_delegator :@transport_config, :commit?
       def_delegator :@transport_config, :commit!
@@ -51,6 +53,38 @@ module Netdev
       # the `IOProc` transport which means this client must be run from
       # the switch it is managing.
       def initialize
+        open_connection!
+        @transaction_open = false
+      end
+
+      def to_s
+        self.class.to_s
+      end
+
+      def start_transaction!
+        # Acquire an exclusive lock on the configuration
+        @transport_config.lock!
+        Chef::Log.info("#{self.to_s}: Acquired exclusive Junos configuration lock")
+        @transaction_open = true
+      end
+
+      def commit_transaction!
+        # commit the candidate configuration
+        @transport_config.commit!
+        Chef::Log.info("Committed pending Junos candidate configuration changes")
+        # release the exclusive lock on the configuration
+        @transport_config.unlock!
+        Chef::Log.info("Released exclusive Junos configuration lock")
+        @transaction_open = false
+      end
+
+      def transaction_open?
+        !!@transaction_open
+      end
+
+      private
+
+      def open_connection!
         # Create a connection to the NETCONF service
         @transport = Netconf::IOProc.new
         @transport.open
@@ -63,14 +97,7 @@ module Netdev
         ApiClient::KNOWN_RESOURCES.each_pair do |resource, provider_module|
           provider_module.send(:Provider, @transport, resource)
         end
-
-        # Acquire an exclusive lock on the configuration
-        @transport_config.lock!
-        Chef::Log.info("#{self.to_s}: Acquired exclusive Junos configuration lock")
-      end
-
-      def to_s
-        self.class.to_s
+        @connection_open = true
       end
 
     end

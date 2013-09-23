@@ -32,10 +32,7 @@ class JunosCommitTransactionHandler < Chef::Handler
       begin
         # on successful Chef-runs commit the transaction
         if success?
-          Netdev::Junos::ApiTransport.instance.commit!
-          Chef::Log.info("Committed pending Junos candidate configuration changes")
-          Netdev::Junos::ApiTransport.instance.unlock!
-          Chef::Log.info("Released exclusive Junos configuration lock")
+          Netdev::Junos::ApiTransport.instance.commit_transaction!
         # on failed Chef-runs rollback the transaction
         else
           Netdev::Junos::ApiTransport.instance.rollback!

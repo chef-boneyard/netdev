@@ -174,6 +174,9 @@ module Netdev
       def with_config_check(&block)
         begin
 
+          # ensure a transaction has been opened
+          transport.start_transaction! unless transport.transaction_open?
+
           yield
 
           # validate the candidate configuration
