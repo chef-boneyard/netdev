@@ -39,8 +39,11 @@ module Netdev
 
       def_delegator :@transport, :[]
 
-      ApiClient::KNOWN_RESOURCES.keys.each do |resource|
-        def_delegator :@transport, resource.to_sym
+      begin
+        ApiClient::KNOWN_RESOURCES.keys.each do |resource|
+          def_delegator :@transport, resource.to_sym
+        end
+      rescue NameError
       end
 
       def_delegator :@transport_config, :unlock!

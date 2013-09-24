@@ -41,6 +41,22 @@ module Netdev
           :vlans => ::Junos::Ez::Vlans,
           :lag_ports => ::Junos::Ez::LAGports
         }
+
+        # STAND BACK...IT'S METAPROGRAMMING TIME
+        KNOWN_RESOURCES.each_pair do |resource, provider_module|
+
+          # Create a child class for each logical resource type. This forces
+          # us to be explicit on which type of resource to manage.
+          c = Class.new(self)
+          c.class_eval <<-EVAL
+            def initialize(resource_name)
+              super(:#{resource}, resource_name)
+            end
+          EVAL
+
+          class_name = provider_module.to_s.split("::").last
+          self.const_set class_name, c
+        end
       rescue NameError
         # If the requires above didn't work our class
         # references are definitely not going to work!
@@ -63,22 +79,6 @@ module Netdev
 
         @resource_type = resource_type
         @resource_name = resource_name
-      end
-
-      # STAND BACK...IT'S METAPROGRAMMING TIME
-      KNOWN_RESOURCES.each_pair do |resource, provider_module|
-
-        # Create a child class for each logical resource type. This forces
-        # us to be explicit on which type of resource to manage.
-        c = Class.new(self)
-        c.class_eval <<-EVAL
-          def initialize(resource_name)
-            super(:#{resource}, resource_name)
-          end
-        EVAL
-
-        class_name = provider_module.to_s.split("::").last
-        self.const_set class_name, c
       end
 
       # Writes managed resource to the candidate configuration.
