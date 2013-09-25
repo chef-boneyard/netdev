@@ -67,5 +67,5 @@ end
 private
 
 def junos_client
-  @junos_client ||= Netdev::JunosApiClient::Vlans.new(new_resource.name)
+  @junos_client ||= Netdev::Junos::ApiClient::Vlans.new(new_resource.name)
 end

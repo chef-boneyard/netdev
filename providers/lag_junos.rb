@@ -80,5 +80,5 @@ end
 private
 
 def junos_client
-  @junos_client ||= Netdev::JunosApiClient::LAGports.new(new_resource.name)
+  @junos_client ||= Netdev::Junos::ApiClient::LAGports.new(new_resource.name)
 end
