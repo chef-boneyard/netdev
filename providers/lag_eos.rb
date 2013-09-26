@@ -80,10 +80,10 @@ def create_lag
   (params << "--links" << new_resource.links.join(',')) if new_resource.links
   (params << "--minimum_links" << new_resource.minimum_links) if new_resource.minimum_links
   (params << "--lacp" << new_resource.lacp) if new_resource.lacp
-  if !params.empty?
-    execute "netdev lag create" do
-      command "netdev lag create #{new_resource.name} #{params.join(' ')}"
-    end
+
+  execute "netdev lag create" do
+    command "netdev lag create #{new_resource.name} #{params.join(' ')}"
+    not_if { params.empty? }
   end
 end
 
@@ -92,10 +92,10 @@ def edit_lag
   (params << "--links" << new_resource.links.join(',')) if has_changed?(current_resource.links, new_resource.links)
   (params << "--minimum_links" << new_resource.minimum_links) if has_changed?(current_resource.minimum_links, new_resource.minimum_links)
   (params << "--lacp" << new_resource.lacp) if has_changed(current_resource.lacp, new_resource.lacp)
-  if !params.empty?
-    execute "netdev lag edit" do
-      command "netdev lag edit #{new_resource.name} #{params.join(' ')}"
-    end
+
+  execute "netdev lag edit" do
+    command "netdev lag edit #{new_resource.name} #{params.join(' ')}"
+    not_if { params.empty? }
   end
 end
 

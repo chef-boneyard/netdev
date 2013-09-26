@@ -83,10 +83,10 @@ def create_l2interface
   (params << "--untagged_vlan" << new_resource.untagged_vlan) if new_resource.untagged_vlan
   (params << "--tagged_vlans" << new_resource.tagged_vlans.join(',')) if new_resource.tagged_vlans
   (params << "--vlan_tagging" << new_resource.vlan_tagging) if new_resource.vlan_tagging
-  if !params.empty?
-    execute "netdev l2interface create" do
-      command "netdev l2interface create #{new_resource.name} #{params.join(' ')}"
-    end
+
+  execute "netdev l2interface create" do
+    command "netdev l2interface create #{new_resource.name} #{params.join(' ')}"
+    not_if { params.empty? }
   end
 end
 
@@ -96,10 +96,10 @@ def edit_l2interface
   (params << "--untagged_vlan" << new_resource.untagged_vlan) if has_changed?(current_resource.untagged_vlan, new_resource.untagged_vlan)
   (params << "--tagged_vlans" << new_resource.tagged_vlans.join(',')) if has_changed?(current_resource.tagged_vlans, new_resource.tagged_vlans)
   (params << "--vlan_tagging" << new_resource.vlan_tagging) if has_changed?(current_resource.vlan_tagging, new_resource.vlan_tagging)
-  if !params.empty?
-    execute "netdev l2interface edit" do
-      command "netdev l2interface edit #{new_resource.name} #{params.join(' ')}"
-    end
+
+  execute "netdev l2interface edit" do
+    command "netdev l2interface edit #{new_resource.name} #{params.join(' ')}"
+    not_if { params.empty? }
   end
 end
 

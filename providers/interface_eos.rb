@@ -30,10 +30,9 @@ action :create do
     (params << "--speed" << new_resource.speed) if has_changed?(current_resource.speed, new_resource.speed)
     (params << "--duplex" << new_resource.duplex) if has_changed?(current_resource.duplex, new_resource.duplex)
 
-    if !params.empty?
-      execute "netdev interface edit" do
-        command "netdev interface edit #{new_resource.name} #{params.join(' ')}"
-      end
+    execute "netdev interface edit" do
+      command "netdev interface edit #{new_resource.name} #{params.join(' ')}"
+      not_if { params.empty? }
     end
   end
 end
