@@ -17,13 +17,8 @@
 # limitations under the License.
 #
 
-netdev_interface "ge-0/0/0" do
-  description "All your interfaces are belong to Chef"
-  speed "1g"
-  duplex "full"
-  action :create
+netdev_l2_interface 'ge-0/0/0' do
+  action :delete
 end
 
-# netdev_interface "ge-0/0/0" do
-#   action :delete
-# end
+include_recipe 'netdev-test::vlan_delete'

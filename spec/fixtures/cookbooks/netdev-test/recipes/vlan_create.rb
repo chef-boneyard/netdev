@@ -17,12 +17,8 @@
 # limitations under the License.
 #
 
-netdev_vlan "chef-test" do
+netdev_vlan 'chef-test' do
   vlan_id 2
   description "Ain't no party like a vlan party! YO YO YO"
   action :create
 end
-
-# netdev_vlan "chef-test" do
-#   action :delete
-# end

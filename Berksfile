@@ -2,6 +2,6 @@ site :opscode
 
 metadata
 
-group :integration do
-  cookbook "netdev-test", :path => "./test/cookbooks/netdev-test"
+group :test do
+  cookbook 'netdev-test', :path => 'spec/fixtures/cookbooks/netdev-test'
 end

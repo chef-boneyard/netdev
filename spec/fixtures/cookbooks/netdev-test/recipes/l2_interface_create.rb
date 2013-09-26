@@ -17,23 +17,11 @@
 # limitations under the License.
 #
 
-netdev_vlan "foobar" do
-  vlan_id 3
-  description "Ain't no party like a vlan party!"
-  action :create
-end
+include_recipe 'netdev-test::vlan_create'
 
-netdev_l2_interface "ge-0/0/0" do
-  description "All your l2 interfaces are belong to Chef"
-  tagged_vlans %w{ foobar }
+netdev_l2_interface 'ge-0/0/0' do
+  description 'All your l2 interfaces are belong to Chef'
+  tagged_vlans %w{ chef-test }
   vlan_tagging true
   action :create
 end
-
-# netdev_l2_interface "ge-0/0/0" do
-#   action :delete
-# end
-
-# netdev_vlan "foobar" do
-#   action :delete
-# end
