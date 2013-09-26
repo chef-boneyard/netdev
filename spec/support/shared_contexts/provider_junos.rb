@@ -27,7 +27,7 @@ shared_context 'provider_junos' do
 
   let(:chef_run) do
     ChefSpec::ChefRunner.new(:step_into => [resource_subject],
-                             :ohai_data_path => 'spec/fixtures/platforms/junos/13.2X50-D10.2.json',
+                             :ohai_data_path => 'test/fixtures/platforms/junos/13.2X50-D10.2.json',
                              :log_level => :error)
   end
 

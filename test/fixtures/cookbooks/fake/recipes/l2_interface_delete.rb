@@ -21,4 +21,4 @@ netdev_l2_interface 'ge-0/0/0' do
   action :delete
 end
 
-include_recipe 'netdev-test::vlan_delete'
+include_recipe 'fake::vlan_delete'
