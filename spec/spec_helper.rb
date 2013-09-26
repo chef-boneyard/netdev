@@ -20,6 +20,11 @@
 require 'berkshelf'
 require 'chefspec'
 
+# load all shared examples and shared contexts
+Dir[File.expand_path('../support/**/*.rb', __FILE__)].each do |file|
+  require(file)
+end
+
 # Stop 'already initialized constant' warnings. These
 # warnings appear because we load the library files
 # twice: once in this file and once by the Chef run.
