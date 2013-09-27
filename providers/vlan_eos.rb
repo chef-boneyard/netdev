@@ -38,7 +38,7 @@ end
 action :delete do
   if @current_resource.exists
     converge_by("remove vlan #{@current_resource.name}") do
-      execute "netdev vlan delete" do
+      execute 'netdev vlan delete' do
         command "netdev vlan delete #{new_resource.vlan_id}"
       end
     end
@@ -54,7 +54,7 @@ def load_current_resource
   @current_resource.exists = false
 
   if resource_exists?
-    resp = eval run_command("netdev vlan list --output ruby-hash")
+    resp = run_command('netdev vlan list --output ruby-hash')
     vlan = resp['result'][@current_resource.vlan_id]
     @current_resource.vlan_id(vlan['vlan_id'])
     @current_resource.exists = true
@@ -67,22 +67,22 @@ end
 
 def resource_exists?
   Chef::Log.info("Looking to see if vlan #{@new_resource.name} (#{@new_resource.vlan_id}) exists")
-  vlans = eval run_command("netdev vlan list --output ruby-hash")
-  return vlans.has_key?(@new_resource.vlan_id)
+  vlans = run_command('netdev vlan list --output ruby-hash')
+  vlans.key?(@new_resource.vlan_id)
 end
 
 def create_vlan
-  execute "netdev vlan create" do
+  execute 'netdev vlan create' do
     params = []
-    params << "--name" << new_resource.name
+    params << '--name' << new_resource.name
     command "netdev vlan create #{new_resource.vlan_id} #{params.join(' ')}"
   end
 end
 
 def edit_vlan
-  execute "netdev vlan edit" do
+  execute 'netdev vlan edit' do
     params = []
-    (params << "--name" << new_resource.name) if new_resource.name != current_resource.name
+    (params << '--name' << new_resource.name) if new_resource.name != current_resource.name
     command "netdev vlan edit #{new_resource.vlan_id} #{params.join(' ')}"
   end
 end
@@ -90,7 +90,6 @@ end
 def run_command(command)
   Chef::Log.info "Running command: #{command}"
   command = Mixlib::ShellOut.new(command)
-  command.run_command()
-  return command.stdout
+  command.run_command
+  command.stdout
 end
-

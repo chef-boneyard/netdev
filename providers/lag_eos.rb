@@ -37,7 +37,7 @@ end
 action :delete do
   if @current_resource.exists
     converge_by("remove lag #{@current_resource.name}") do
-      execute "netdev lag delete" do
+      execute 'netdev lag delete' do
         command "netdev lag delete #{new_resource.name}"
       end
     end
@@ -52,7 +52,7 @@ def load_current_resource
   @current_resource.exists = false
 
   if resource_exists?
-    resp = eval run_command("netdev lag list --output ruby-hash")
+    resp = run_command('netdev lag list --output ruby-hash')
     lag = resp['result'][@new_resource.name]
     @current_resource.links(lag['links'])
     @current_resource.minimum_links(lag['minimum_links'])
@@ -67,33 +67,33 @@ end
 
 def resource_exists?
   Chef::Log.info("Looking to see if lag #{@new_resource.name} exists")
-  lags = eval run_command("netdev lag list --output ruby-hash")
-  return lags.has_key?(@new_resource.name)
+  lags = run_command('netdev lag list --output ruby-hash')
+  lags.key?(@new_resource.name)
 end
 
 def has_changed?(curres, newres)
-  return curres != newres && !newres.nil?
+  curres != newres && !newres.nil?
 end
 
 def create_lag
-  params = Array.new()
-  (params << "--links" << new_resource.links.join(',')) if new_resource.links
-  (params << "--minimum_links" << new_resource.minimum_links) if new_resource.minimum_links
-  (params << "--lacp" << new_resource.lacp) if new_resource.lacp
+  params = []
+  (params << '--links' << new_resource.links.join(',')) if new_resource.links
+  (params << '--minimum_links' << new_resource.minimum_links) if new_resource.minimum_links
+  (params << '--lacp' << new_resource.lacp) if new_resource.lacp
 
-  execute "netdev lag create" do
+  execute 'netdev lag create' do
     command "netdev lag create #{new_resource.name} #{params.join(' ')}"
     not_if { params.empty? }
   end
 end
 
 def edit_lag
-  params = Array.new()
-  (params << "--links" << new_resource.links.join(',')) if has_changed?(current_resource.links, new_resource.links)
-  (params << "--minimum_links" << new_resource.minimum_links) if has_changed?(current_resource.minimum_links, new_resource.minimum_links)
-  (params << "--lacp" << new_resource.lacp) if has_changed(current_resource.lacp, new_resource.lacp)
+  params = []
+  (params << '--links' << new_resource.links.join(',')) if has_changed?(current_resource.links, new_resource.links)
+  (params << '--minimum_links' << new_resource.minimum_links) if has_changed?(current_resource.minimum_links, new_resource.minimum_links)
+  (params << '--lacp' << new_resource.lacp) if has_changed(current_resource.lacp, new_resource.lacp)
 
-  execute "netdev lag edit" do
+  execute 'netdev lag edit' do
     command "netdev lag edit #{new_resource.name} #{params.join(' ')}"
     not_if { params.empty? }
   end
@@ -102,7 +102,6 @@ end
 def run_command(command)
   Chef::Log.info "Running command: #{command}"
   command = Mixlib::ShellOut.new(command)
-  command.run_command()
-  return command.stdout
+  command.run_command
+  command.stdout
 end
-

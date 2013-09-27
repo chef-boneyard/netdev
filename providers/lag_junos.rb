@@ -26,14 +26,14 @@ action :create do
   current_values = current_resource.state
 
   # junos-ez-stdlib uses the past tense
-  new_values[:lacp] = "disabled" if new_resource.lacp == "disable"
-  current_values[:lacp] = "disabled" if current_resource.lacp == "disable"
+  new_values[:lacp] = 'disabled' if new_resource.lacp == 'disable'
+  current_values[:lacp] = 'disabled' if current_resource.lacp == 'disable'
 
   updated_values = junos_client.updated_changed_properties(new_values,
                                                            current_values)
   unless updated_values.empty?
     message  = "create link aggregation group #{new_resource.name} with values:"
-    message << " #{updated_values.map{|e| e.join(" => ")}.join(", ")}"
+    message << " #{updated_values.map { |e| e.join(" => ")}.join(", ")}"
     converge_by(message) do
       junos_client.write!
     end
@@ -58,8 +58,8 @@ def load_current_resource
     @current_resource.minimum_links(lag[:minimum_links])
 
     # junos-ez-stdlib uses the past tense
-    if lag[:lacp].to_s == "disabled"
-      @current_resource.lacp("disable")
+    if lag[:lacp].to_s == 'disabled'
+      @current_resource.lacp('disable')
     else
       @current_resource.lacp(lag[:lacp].to_s)
     end

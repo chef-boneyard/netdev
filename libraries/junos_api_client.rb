@@ -21,13 +21,15 @@ begin
   require 'junos-ez/stdlib'
   require ' net/netconf/exception'
 rescue LoadError
-  msg  = "Could not load the junos-ez-stdlib gem..."
-  msg << "ensure you are using the Chef for Junos packages"
+  msg  = 'Could not load the junos-ez-stdlib gem...'
+  msg << 'ensure you are using the Chef for Junos packages'
   Chef::Log.debug msg
 end
 
 module Netdev
   module Junos
+    # Provides compatibility shim between netdev_*_junos
+    # providers and the `junos-ez-stdlib` library.
     class ApiClient
 
       begin
@@ -54,12 +56,13 @@ module Netdev
             end
           EVAL
 
-          class_name = provider_module.to_s.split("::").last
-          self.const_set class_name, c
+          class_name = provider_module.to_s.split('::').last
+          const_set class_name, c
         end
       rescue NameError
         # If the requires above didn't work our class
         # references are definitely not going to work!
+        Chef::Log.debug 'Could not generate Netdev::Junos::ApiClient child classes.'
       end
 
       # The `Junos::Ez` providers expect certain values
@@ -85,7 +88,7 @@ module Netdev
       def write!
         with_config_check do
           managed_resource.write!
-          Chef::Log.debug("#{self.to_s} wrote managed resource to Junos candidate configuration")
+          Chef::Log.debug("#{to_s} wrote managed resource to Junos candidate configuration")
         end
       end
 
@@ -93,7 +96,7 @@ module Netdev
       def delete!
         with_config_check do
           managed_resource.delete!
-          Chef::Log.debug("#{self.to_s} deleted managed resource from Junos candidate configuration")
+          Chef::Log.debug("#{to_s} deleted managed resource from Junos candidate configuration")
         end
       end
 
@@ -101,7 +104,7 @@ module Netdev
       def activate!
         with_config_check do
           managed_resource.activate!
-          Chef::Log.debug("#{self.to_s} activated managed resource in Junos candidate configuration")
+          Chef::Log.debug("#{to_s} activated managed resource in Junos candidate configuration")
         end
       end
 
@@ -109,7 +112,7 @@ module Netdev
       def deactivate!
         with_config_check do
           managed_resource.deactivate!
-          Chef::Log.debug("#{self.to_s} deactivated managed resource in Junos candidate configuration")
+          Chef::Log.debug("#{to_s} deactivated managed resource in Junos candidate configuration")
         end
       end
 
@@ -125,7 +128,7 @@ module Netdev
           old_value = current_values[property_name]
 
           if !new_value.nil? && (old_value != new_value)
-            Chef::Log.debug("#{self.to_s} property '#{property_name}' has changed to '#{new_value}'")
+            Chef::Log.debug("#{to_s} property '#{property_name}' has changed to '#{new_value}'")
 
             if managed_resource.properties.include?(property_name)
               # junos-ez-stdlib prefers some values as symbols
@@ -135,7 +138,7 @@ module Netdev
                                                   new_value
                                                 end
             else
-              error_message  = "#{self.to_s} don't know how to manage property :#{property_name}."
+              error_message  = "#{to_s} don't know how to manage property :#{property_name}."
               error_message << " Known properties include: :#{managed_resource.properties.join(", :")}"
               raise ArgumentError.new(error_message)
             end
@@ -172,22 +175,18 @@ module Netdev
       # the code passed to this method. If validation fails an exception
       # is raised so the Chef run is halted.
       def with_config_check(&block)
-        begin
+        # ensure a transaction has been opened
+        transport.start_transaction! unless transport.transaction_open?
 
-          # ensure a transaction has been opened
-          transport.start_transaction! unless transport.transaction_open?
+        yield
 
-          yield
-
-          # validate the candidate configuration
-          if transport.commit?
-            Chef::Log.debug("#{self.to_s} validated Junos candidate configuration")
-          end
-
-        rescue Netconf::RpcError => e
-          Chef::Log.error(format_rpc_error(e))
-          raise e
+        # validate the candidate configuration
+        if transport.commit?
+          Chef::Log.debug("#{to_s} validated Junos candidate configuration")
         end
+      rescue Netconf::RpcError => e
+        Chef::Log.error(format_rpc_error(e))
+        raise e
       end
 
       # Takes a `Netconf::RpcError` and extracts the request and response
@@ -207,14 +206,15 @@ module Netdev
         # `net-netconf` gem.
         begin
           require 'nokogiri'
-          request = Nokogiri::XML(request.to_xml){|doc| doc.noblanks }
-          response = Nokogiri::XML(response.to_xml){|doc| doc.noblanks }
+          request = Nokogiri::XML(request.to_xml) { |doc| doc.noblanks }
+          response = Nokogiri::XML(response.to_xml) { |doc| doc.noblanks }
         rescue LoadError
+          Chef::Log.debug 'Could not load nokogiri gem, xml will not be formatted'
           # fall back to ugly xml
         end
 
-        error_msg =<<-MSG
-  #{self.to_s} error communicating with the Junos XML API...rolling back!
+        error_msg = <<-MSG
+  #{to_s} error communicating with the Junos XML API...rolling back!
 
   JUNOS XML REQUEST:
 
