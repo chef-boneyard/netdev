@@ -38,7 +38,7 @@ end
 action :delete do
   if @current_resource.exists
     converge_by("remove l2interface #{@current_resource.name}") do
-      execute "netdev l2interface delete" do
+      execute 'netdev l2interface delete' do
         command "netdev l2interface delete #{new_resource.name}"
       end
     end
@@ -53,7 +53,7 @@ def load_current_resource
   @current_resource.exists = false
 
   if resource_exists?
-    resp = eval run_command("netdev l2interface list --output ruby-hash")
+    resp = run_command('netdev l2interface list --output ruby-hash')
     interface = resp['result'][@new_resource.name]
     @current_resource.description(interface['description'])
     @current_resource.untagged_vlan(interface['untagged_vlan'])
@@ -69,44 +69,43 @@ end
 
 def resource_exists?
   Chef::Log.info("Looking to see if l2interface #{@new_resource.name} exists")
-  interfaces = eval run_command("netdev l2interface list --output ruby-hash")
-  return interfaces.has_key?(@new_resource.name)
+  interfaces = run_command('netdev l2interface list --output ruby-hash')
+  interfaces.key?(@new_resource.name)
 end
 
 def has_changed?(curres, newres)
-  return curres != newres && !newres.nil?
+  curres != newres && !newres.nil?
 end
 
 def create_l2interface
-  params = Array.new()
-  (params << "--description" << new_resource.description) if new_resource.description
-  (params << "--untagged_vlan" << new_resource.untagged_vlan) if new_resource.untagged_vlan
-  (params << "--tagged_vlans" << new_resource.tagged_vlans.join(',')) if new_resource.tagged_vlans
-  (params << "--vlan_tagging" << new_resource.vlan_tagging) if new_resource.vlan_tagging
-  if !params.empty?
-    execute "netdev l2interface create" do
-      command "netdev l2interface create #{new_resource.name} #{params.join(' ')}"
-    end
+  params = []
+  (params << '--description' << new_resource.description) if new_resource.description
+  (params << '--untagged_vlan' << new_resource.untagged_vlan) if new_resource.untagged_vlan
+  (params << '--tagged_vlans' << new_resource.tagged_vlans.join(',')) if new_resource.tagged_vlans
+  (params << '--vlan_tagging' << new_resource.vlan_tagging) if new_resource.vlan_tagging
+
+  execute 'netdev l2interface create' do
+    command "netdev l2interface create #{new_resource.name} #{params.join(' ')}"
+    not_if { params.empty? }
   end
 end
 
 def edit_l2interface
-  params = Array.new()
-  (params << "--description" << new_resource.description) if has_changed?(current_resource.description, new_resource.description)
-  (params << "--untagged_vlan" << new_resource.untagged_vlan) if has_changed?(current_resource.untagged_vlan, new_resource.untagged_vlan)
-  (params << "--tagged_vlans" << new_resource.tagged_vlans.join(',')) if has_changed?(current_resource.tagged_vlans, new_resource.tagged_vlans)
-  (params << "--vlan_tagging" << new_resource.vlan_tagging) if has_changed?(current_resource.vlan_tagging, new_resource.vlan_tagging)
-  if !params.empty?
-    execute "netdev l2interface edit" do
-      command "netdev l2interface edit #{new_resource.name} #{params.join(' ')}"
-    end
+  params = []
+  (params << '--description' << new_resource.description) if has_changed?(current_resource.description, new_resource.description)
+  (params << '--untagged_vlan' << new_resource.untagged_vlan) if has_changed?(current_resource.untagged_vlan, new_resource.untagged_vlan)
+  (params << '--tagged_vlans' << new_resource.tagged_vlans.join(',')) if has_changed?(current_resource.tagged_vlans, new_resource.tagged_vlans)
+  (params << '--vlan_tagging' << new_resource.vlan_tagging) if has_changed?(current_resource.vlan_tagging, new_resource.vlan_tagging)
+
+  execute 'netdev l2interface edit' do
+    command "netdev l2interface edit #{new_resource.name} #{params.join(' ')}"
+    not_if { params.empty? }
   end
 end
 
 def run_command(command)
   Chef::Log.info "Running command: #{command}"
   command = Mixlib::ShellOut.new(command)
-  command.run_command()
-  return command.stdout
+  command.run_command
+  command.stdout
 end
-

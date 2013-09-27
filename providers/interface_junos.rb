@@ -32,7 +32,7 @@ action :create do
                                                            current_values)
   unless updated_values.empty?
     message  = "create interface #{new_resource.name} with values:"
-    message << " #{updated_values.map{|e| e.join(" => ")}.join(", ")}"
+    message << " #{updated_values.map { |e| e.join(" => ")}.join(", ")}"
     converge_by(message) do
       junos_client.write!
     end
