@@ -17,12 +17,22 @@
 # limitations under the License.
 #
 
-netdev_vlan "chef-test" do
-  vlan_id 2
-  description "Ain't no party like a vlan party! YO YO YO"
-  action :create
-end
+shared_context 'provider_junos' do
 
-# netdev_vlan "chef-test" do
-#   action :delete
-# end
+  let(:junos_client) { double('junos_client', :managed_resource => managed_resource) }
+
+  before do
+    Netdev::Junos::ApiClient.stub(:new).and_return(junos_client)
+  end
+
+  let(:chef_run) do
+    ChefSpec::ChefRunner.new(:step_into => [resource_subject],
+                             :ohai_data_path => 'test/fixtures/platforms/junos/13.2X50-D10.2.json',
+                             :log_level => :error)
+  end
+
+  # Helpers
+  def pending_lwrp_testability
+    pending('Waiting for ChefSpec to add better testibility to LWRPs')
+  end
+end

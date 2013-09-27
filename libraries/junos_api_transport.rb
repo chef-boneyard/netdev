@@ -23,13 +23,14 @@ begin
   require 'net/netconf/jnpr/ioproc'
   require 'junos-ez/stdlib'
 rescue LoadError
-  msg  = "Could not load the junos-ez-stdlib gem..."
-  msg << "ensure you are using the Chef for Junos packages"
+  msg  = 'Could not load the junos-ez-stdlib gem...'
+  msg << 'ensure you are using the Chef for Junos packages'
   Chef::Log.debug msg
 end
 
 module Netdev
   module Junos
+    # Singleton class used to control Junos transaction lifecycle.
     class ApiTransport
       include Singleton
       extend Forwardable
@@ -39,8 +40,12 @@ module Netdev
 
       def_delegator :@transport, :[]
 
-      ApiClient::KNOWN_RESOURCES.keys.each do |resource|
-        def_delegator :@transport, resource.to_sym
+      begin
+        ApiClient::KNOWN_RESOURCES.keys.each do |resource|
+          def_delegator :@transport, resource.to_sym
+        end
+      rescue NameError
+        Chef::Log.debug 'Could not load Netdev::Junos::ApiClient class'
       end
 
       def_delegator :@transport_config, :unlock!
@@ -64,17 +69,17 @@ module Netdev
       def start_transaction!
         # Acquire an exclusive lock on the configuration
         @transport_config.lock!
-        Chef::Log.info("#{self.to_s}: Acquired exclusive Junos configuration lock")
+        Chef::Log.info("#{to_s}: Acquired exclusive Junos configuration lock")
         @transaction_open = true
       end
 
       def commit_transaction!
         # commit the candidate configuration
         @transport_config.commit!
-        Chef::Log.info("Committed pending Junos candidate configuration changes")
+        Chef::Log.info('Committed pending Junos candidate configuration changes')
         # release the exclusive lock on the configuration
         @transport_config.unlock!
-        Chef::Log.info("Released exclusive Junos configuration lock")
+        Chef::Log.info('Released exclusive Junos configuration lock')
         @transaction_open = false
       end
 

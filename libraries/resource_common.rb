@@ -19,6 +19,7 @@
 
 module Netdev
   module Resource
+    # Common methods shared by all netdev_* resources.
     module Common
 
       attr_accessor :active, :exists
@@ -27,13 +28,13 @@ module Netdev
 
       # Override intializer and replace with a version that performs
       # late binding of a provider based on node platform.
-      def initialize(name, run_context=nil)
+      def initialize(name, run_context = nil)
         super
 
         platform = begin
           # We need to update core Ohai to properly identify EOS
-          if File.exist?("/etc/Eos-release")
-            "eos"
+          if File.exist?('/etc/Eos-release')
+            'eos'
           # It is entirely possible we will not have a node object. This
           # happens when a resource is instantiated in a provider's
           # `#load_current_resource` method.
@@ -73,7 +74,7 @@ module Netdev
         unless KNOWN_PLATFORMS.include?(platform)
           error_message  = "The platform '#{platform}' is not currently supported"
           error_message << " by the '#{resource_name}' resource."
-          error_message << " Supported platforms include:"
+          error_message << ' Supported platforms include: '
           error_message << KNOWN_PLATFORMS.join(', ')
           raise error_message
         end

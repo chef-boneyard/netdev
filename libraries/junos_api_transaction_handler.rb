@@ -20,11 +20,13 @@
 begin
   require ' net/netconf/exception'
 rescue LoadError
-  msg  = "Could not load the junos-ez-stdlib gem..."
-  msg << "ensure you are using the Chef for Junos packages"
+  msg  = 'Could not load the junos-ez-stdlib gem...'
+  msg << 'ensure you are using the Chef for Junos packages'
   Chef::Log.debug msg
 end
 
+# Chef handler used to commit pending Junos
+# candidate configuration changes.
 class JunosCommitTransactionHandler < Chef::Handler
   def report
     # Ensure handler is no-op in why-run mode and on non-Junos platforms.
@@ -36,7 +38,7 @@ class JunosCommitTransactionHandler < Chef::Handler
         # on failed Chef-runs rollback the transaction
         else
           Netdev::Junos::ApiTransport.instance.rollback!
-          Chef::Log.info("Rolled back pending Junos candidate configuration changes")
+          Chef::Log.info('Rolled back pending Junos candidate configuration changes')
         end
       rescue Netconf::RpcError => e
         Chef::Log.error("Could not complete Junos configuration transaction: #{e}")
@@ -45,8 +47,8 @@ class JunosCommitTransactionHandler < Chef::Handler
   end
 end
 
-Chef::Config[:report_handlers].reject! {|i| i.kind_of?(JunosCommitTransactionHandler) }
+Chef::Config[:report_handlers].reject! { |i| i.kind_of?(JunosCommitTransactionHandler) }
 Chef::Config[:report_handlers] << JunosCommitTransactionHandler.new
 
-Chef::Config[:exception_handlers].reject! {|i| i.kind_of?(JunosCommitTransactionHandler) }
+Chef::Config[:exception_handlers].reject! { |i| i.kind_of?(JunosCommitTransactionHandler) }
 Chef::Config[:exception_handlers] << JunosCommitTransactionHandler.new
