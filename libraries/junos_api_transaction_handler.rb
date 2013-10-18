@@ -34,7 +34,17 @@ class JunosCommitTransactionHandler < Chef::Handler
       begin
         # on successful Chef-runs commit the transaction
         if success?
-          Netdev::Junos::ApiTransport.instance.commit_transaction!
+
+          commit_log_comment = nil
+
+          # Attempt to extract a run id from the run context
+          if run_id = extract_run_id(run_context)
+            commit_log_comment = "Chef Run ID: #{run_id}"
+          else
+            Chef::Log.debug("Could not extract a Chef run ID for the Junos commit log.")
+          end
+
+          Netdev::Junos::ApiTransport.instance.commit_transaction!(commit_log_comment)
         # on failed Chef-runs rollback the transaction
         else
           Netdev::Junos::ApiTransport.instance.rollback!
@@ -42,6 +52,33 @@ class JunosCommitTransactionHandler < Chef::Handler
         end
       rescue Netconf::RpcError => e
         Chef::Log.error("Could not complete Junos configuration transaction: #{e}")
+      end
+    end
+  end
+
+  private
+
+  # Currently the a Chef run's unique UUID only lives in an instance of
+  # `Chef::ResourceReporter` which is created for each Chef run. It
+  # would be nice to push this run ID higher up into Chef so it is
+  # easier to extract.
+  #
+  # Currently chef-solo does not register a `Chef::ResourceReporter`
+  # handler so this method will return nil in that case.
+  def extract_run_id(run_context)
+    # Chef 11.8.2+ exposes a run_id to report handlers
+    if self.respond_to?(:run_id)
+      run_id
+    # If we are running on older Chef we'll go trolling the event
+    # handlers for a resource reporter (which generates a run ID).
+    else
+      if run_context.events.instance_variable_defined?("@subscribers")
+        if subscribers = run_context.events.instance_variable_get("@subscribers")
+          resource_reporter = subscribers.find do |handler|
+                                handler.kind_of?(Chef::ResourceReporter)
+                              end
+          resource_reporter.run_id if resource_reporter
+        end
       end
     end
   end

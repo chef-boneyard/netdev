@@ -73,9 +73,11 @@ module Netdev
         @transaction_open = true
       end
 
-      def commit_transaction!
+      def commit_transaction!(commit_log_comment = nil)
+        opts = {}
+        opts[:comment] = commit_log_comment if commit_log_comment
         # commit the candidate configuration
-        @transport_config.commit!
+        @transport_config.commit!(opts)
         Chef::Log.info('Committed pending Junos candidate configuration changes')
         # release the exclusive lock on the configuration
         @transport_config.unlock!
