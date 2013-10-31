@@ -1,0 +1,18 @@
+---
+driver_plugin: proxy
+driver_config:
+  require_chef_omnibus: false
+  sudo: false
+  username: <%= ENV['USER'] %>
+  ruby_binpath: /opt/sdk/juniper/bin
+
+platforms:
+- name: junos-13.2X50-D10.2
+  driver_config:
+    host: <%= ENV['KITCHEN_JUNOS_132X50_HOST'] %>
+    reset_command: cli -c 'configure; rollback rescue; commit'
+
+suites:
+- name: default
+  run_list:
+  - recipe[fake::vlan_create]
