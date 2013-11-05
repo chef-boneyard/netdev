@@ -1,4 +1,3 @@
----
 driver_plugin: proxy
 driver_config:
   require_chef_omnibus: false
@@ -13,6 +12,6 @@ platforms:
     reset_command: cli -c 'configure; rollback rescue; commit'
 
 suites:
-- name: default
+- name: vlan
   run_list:
   - recipe[fake::vlan_create]
