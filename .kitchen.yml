@@ -18,6 +18,9 @@ suites:
 - name: l2_interface
   run_list:
   - recipe[fake::l2_interface_create]
+- name: lag
+  run_list:
+  - recipe[fake::lag_create]
 - name: vlan
   run_list:
   - recipe[fake::vlan_create]
