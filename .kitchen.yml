@@ -12,6 +12,9 @@ platforms:
     reset_command: cli -c 'configure; rollback rescue; commit'
 
 suites:
+- name: interface
+  run_list:
+  - recipe[fake::interface_create]
 - name: vlan
   run_list:
   - recipe[fake::vlan_create]
