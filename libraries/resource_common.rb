@@ -26,10 +26,10 @@ module Netdev
       alias_method :active?, :active
       alias_method :exists?, :exists
 
-      # Override intializer and replace with a version that performs
+      # Override initializer and replace with a version that performs
       # late binding of a provider based on node platform.
       def initialize(name, run_context = nil)
-        super
+        super(name, run_context)
 
         platform = begin
           # We need to update core Ohai to properly identify EOS
