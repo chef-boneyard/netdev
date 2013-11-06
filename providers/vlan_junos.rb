@@ -45,6 +45,7 @@ def load_current_resource
   Chef::Log.info "Loading current resource #{new_resource.name}"
 
   @current_resource = Chef::Resource::NetdevVlan.new(new_resource.name)
+  @current_resource.vlan_name(new_resource.vlan_name)
 
   if (vlan = junos_client.managed_resource) && vlan.exists?
     @current_resource.vlan_id(vlan[:vlan_id])
@@ -67,5 +68,5 @@ end
 private
 
 def junos_client
-  @junos_client ||= Netdev::Junos::ApiClient::Vlans.new(new_resource.name)
+  @junos_client ||= Netdev::Junos::ApiClient::Vlans.new(new_resource.vlan_name)
 end

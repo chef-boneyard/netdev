@@ -45,6 +45,7 @@ def load_current_resource
   Chef::Log.info "Loading current resource #{new_resource.name}"
 
   @current_resource = Chef::Resource::NetdevL2Interface.new(new_resource.name)
+  @current_resource.l2_interface_name(new_resource.l2_interface_name)
 
   if (port = junos_client.managed_resource) && port.exists?
     @current_resource.description(port[:description])
@@ -67,5 +68,5 @@ end
 private
 
 def junos_client
-  @junos_client ||= Netdev::Junos::ApiClient::L2ports.new(new_resource.name)
+  @junos_client ||= Netdev::Junos::ApiClient::L2ports.new(new_resource.l2_interface_name)
 end

@@ -74,7 +74,7 @@ end
 def create_vlan
   execute 'netdev vlan create' do
     params = []
-    params << '--name' << new_resource.name
+    params << '--name' << new_resource.vlan_name
     command "netdev vlan create #{new_resource.vlan_id} #{params.join(' ')}"
   end
 end
@@ -82,7 +82,7 @@ end
 def edit_vlan
   execute 'netdev vlan edit' do
     params = []
-    (params << '--name' << new_resource.name) if new_resource.name != current_resource.name
+    (params << '--name' << new_resource.vlan_name) if new_resource.vlan_name != current_resource.vlan_name
     command "netdev vlan edit #{new_resource.vlan_id} #{params.join(' ')}"
   end
 end

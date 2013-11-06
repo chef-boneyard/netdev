@@ -39,7 +39,7 @@ action :delete do
   if @current_resource.exists
     converge_by("remove l2interface #{@current_resource.name}") do
       execute 'netdev l2interface delete' do
-        command "netdev l2interface delete #{new_resource.name}"
+        command "netdev l2interface delete #{new_resource.l2_interface_name}"
       end
     end
   else
@@ -54,7 +54,7 @@ def load_current_resource
 
   if resource_exists?
     resp = run_command('netdev l2interface list --output ruby-hash')
-    interface = resp['result'][@new_resource.name]
+    interface = resp['result'][@new_resource.l2_interface_name]
     @current_resource.description(interface['description'])
     @current_resource.untagged_vlan(interface['untagged_vlan'])
     @current_resource.tagged_vlans(interface['tagged_vlans'])
@@ -70,7 +70,7 @@ end
 def resource_exists?
   Chef::Log.info("Looking to see if l2interface #{@new_resource.name} exists")
   interfaces = run_command('netdev l2interface list --output ruby-hash')
-  interfaces.key?(@new_resource.name)
+  interfaces.key?(@new_resource.l2_interface_name)
 end
 
 def has_changed?(curres, newres)
@@ -85,7 +85,7 @@ def create_l2interface
   (params << '--vlan_tagging' << new_resource.vlan_tagging) if new_resource.vlan_tagging
 
   execute 'netdev l2interface create' do
-    command "netdev l2interface create #{new_resource.name} #{params.join(' ')}"
+    command "netdev l2interface create #{new_resource.l2_interface_name} #{params.join(' ')}"
     not_if { params.empty? }
   end
 end
@@ -98,7 +98,7 @@ def edit_l2interface
   (params << '--vlan_tagging' << new_resource.vlan_tagging) if has_changed?(current_resource.vlan_tagging, new_resource.vlan_tagging)
 
   execute 'netdev l2interface edit' do
-    command "netdev l2interface edit #{new_resource.name} #{params.join(' ')}"
+    command "netdev l2interface edit #{new_resource.l2_interface_name} #{params.join(' ')}"
     not_if { params.empty? }
   end
 end

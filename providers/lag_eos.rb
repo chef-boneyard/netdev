@@ -38,7 +38,7 @@ action :delete do
   if @current_resource.exists
     converge_by("remove lag #{@current_resource.name}") do
       execute 'netdev lag delete' do
-        command "netdev lag delete #{new_resource.name}"
+        command "netdev lag delete #{new_resource.lag_name}"
       end
     end
   else
@@ -53,7 +53,7 @@ def load_current_resource
 
   if resource_exists?
     resp = run_command('netdev lag list --output ruby-hash')
-    lag = resp['result'][@new_resource.name]
+    lag = resp['result'][@new_resource.lag_name]
     @current_resource.links(lag['links'])
     @current_resource.minimum_links(lag['minimum_links'])
     @current_resource.lacp(lag['lacp'])
@@ -68,7 +68,7 @@ end
 def resource_exists?
   Chef::Log.info("Looking to see if lag #{@new_resource.name} exists")
   lags = run_command('netdev lag list --output ruby-hash')
-  lags.key?(@new_resource.name)
+  lags.key?(@new_resource.lag_name)
 end
 
 def has_changed?(curres, newres)
@@ -82,7 +82,7 @@ def create_lag
   (params << '--lacp' << new_resource.lacp) if new_resource.lacp
 
   execute 'netdev lag create' do
-    command "netdev lag create #{new_resource.name} #{params.join(' ')}"
+    command "netdev lag create #{new_resource.lag_name} #{params.join(' ')}"
     not_if { params.empty? }
   end
 end
@@ -94,7 +94,7 @@ def edit_lag
   (params << '--lacp' << new_resource.lacp) if has_changed(current_resource.lacp, new_resource.lacp)
 
   execute 'netdev lag edit' do
-    command "netdev lag edit #{new_resource.name} #{params.join(' ')}"
+    command "netdev lag edit #{new_resource.lag_name} #{params.join(' ')}"
     not_if { params.empty? }
   end
 end

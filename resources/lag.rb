@@ -20,12 +20,12 @@
 actions :create, :delete
 default_action :create
 
-attribute :name,            :kind_of => String, :name_attribute => true, :required => true
 attribute :links,           :kind_of => Array
 attribute :minimum_links,   :kind_of => Integer
 attribute :lacp,            :kind_of => String, :equal_to => %w{ disable active passive }
+attribute :lag_name,      :kind_of => String, :name_attribute => true, :required => true
 
-identity_attr :name
+identity_attr :lag_name
 state_attrs :links, :minimum_links, :lacp
 
 include Netdev::Resource::Common

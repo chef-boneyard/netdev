@@ -20,11 +20,11 @@
 actions :create, :delete
 default_action :create
 
-attribute :name,          :kind_of => String, :name_attribute => true
 attribute :vlan_id,       :kind_of => Integer, :required => true
 attribute :description,   :kind_of => String
+attribute :vlan_name,   :kind_of => String, :name_attribute => true
 
-identity_attr :name
+identity_attr :vlan_name
 state_attrs :vlan_id, :description
 
 include Netdev::Resource::Common

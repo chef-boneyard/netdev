@@ -31,7 +31,7 @@ action :create do
     (params << '--duplex' << new_resource.duplex) if has_changed?(current_resource.duplex, new_resource.duplex)
 
     execute 'netdev interface edit' do
-      command "netdev interface edit #{new_resource.name} #{params.join(' ')}"
+      command "netdev interface edit #{new_resource.interface_name} #{params.join(' ')}"
       not_if { params.empty? }
     end
   end
@@ -40,7 +40,7 @@ end
 action :delete do
   converge_by("remove interface #{new_resource.name}") do
     execute 'netdev interface delete' do
-      command "netdev interface delete #{new_resource.name}"
+      command "netdev interface delete #{new_resource.interface_name}"
     end
   end
 end
@@ -49,9 +49,10 @@ def load_current_resource
   Chef::Log.info "Loading current resource #{@new_resource.name}"
 
   resp = run_command('netdev interface list --output ruby-hash')
-  interface = resp['result'][@new_resource.name]
+  interface = resp['result'][@new_resource.interface_name]
 
   @current_resource = Chef::Resource::NetdevInterface.new(@new_resource.name)
+  @current_resource.interface_name(@new_resource.interface_name)
   @current_resource.admin(interface['admin'])
   @current_resource.description(interface['description'])
   @current_resource.mtu(interface['mtu'])
