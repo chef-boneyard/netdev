@@ -21,8 +21,8 @@ actions :create, :delete
 default_action :create
 
 attribute :vlan_id,       :kind_of => Integer, :required => true
-attribute :description,   :kind_of => String
 attribute :vlan_name,   :kind_of => String, :name_attribute => true
+attribute :description, :kind_of => String # default is auto-generated in Netdev::Resource::Common#initialize
 
 identity_attr :vlan_name
 state_attrs :vlan_id, :description

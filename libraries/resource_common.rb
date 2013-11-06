@@ -47,6 +47,16 @@ module Netdev
           @provider = platform_provider_for_resource(self.class.resource_name,
                                                      platform)
         end
+
+        # Example transformations:
+        #
+        # netdev_interface -> interface
+        # netdev_l2_interface -> l2_interface
+        #
+        type = self.class.resource_name.split('_')[1..-1].join('_')
+
+        # Set a default description based on `type` and `name`.
+        @description = "Chef created #{type}: #{name}"
       end
 
       # Supported Networking Operating Systems:

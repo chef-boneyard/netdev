@@ -46,6 +46,10 @@ def load_current_resource
 
   @current_resource = Chef::Resource::NetdevVlan.new(new_resource.name)
   @current_resource.vlan_name(new_resource.vlan_name)
+  # We want to override the default description generated for this
+  # resource. Hacky workaround for the fact Chef::Resource#set_or_return
+  # won't let us nil out an attribute.
+  @current_resource.instance_variable_set('@description', nil)
 
   if (vlan = junos_client.managed_resource) && vlan.exists?
     @current_resource.vlan_id(vlan[:vlan_id])

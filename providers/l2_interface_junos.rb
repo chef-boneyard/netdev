@@ -46,6 +46,10 @@ def load_current_resource
 
   @current_resource = Chef::Resource::NetdevL2Interface.new(new_resource.name)
   @current_resource.l2_interface_name(new_resource.l2_interface_name)
+  # We want to override the default description generated for this
+  # resource. Hacky workaround for the fact Chef::Resource#set_or_return
+  # won't let us nil out an attribute.
+  @current_resource.instance_variable_set('@description', nil)
 
   if (port = junos_client.managed_resource) && port.exists?
     @current_resource.description(port[:description])

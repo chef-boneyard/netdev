@@ -18,7 +18,7 @@ describe command('cli show config interfaces ge-0/0/0') do
   it { should return_stdout(/vlan \{\s.*members chef-test;/) }
   it do
     should return_stdout(
-      /description "All your l2 interfaces are belong to Chef";/
+      %r{description "Chef created l2_interface: ge-0/0/0";}
     )
   end
 end
