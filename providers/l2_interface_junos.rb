@@ -19,6 +19,7 @@
 # limitations under the License.
 #
 
+include Netdev::Provider::Common::Junos
 use_inline_resources
 
 action :create do
@@ -26,7 +27,7 @@ action :create do
                                                            current_resource.state)
   unless updated_values.empty?
     message  = "create layer 2 interface #{new_resource.name} with values:"
-    message << " #{updated_values.map { |e| e.join(" => ")}.join(", ")}"
+    message << " #{pretty_print_updated_values(updated_values)}"
     converge_by(message) do
       junos_client.write!
     end
