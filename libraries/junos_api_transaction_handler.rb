@@ -52,9 +52,18 @@ class JunosCommitTransactionHandler < Chef::Handler
           Chef::Log.info('Rolled back pending Junos candidate configuration changes')
         end
       rescue Netconf::RpcError => e
-        Chef::Log.error("Could not complete Junos configuration transaction: #{e}")
+        failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
+        Chef::Log.fatal(failure_msg)
+        raise(failure_msg)
       end
     end
+  end
+
+  # We have to override this method so we can force a non-zero exit on
+  # transaction commit failures.
+  def run_report_safely(run_status)
+    run_report_unsafe(run_status)
+    @run_status = nil
   end
 
   private
