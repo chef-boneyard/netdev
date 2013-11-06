@@ -38,10 +38,11 @@ class JunosCommitTransactionHandler < Chef::Handler
           commit_log_comment = nil
 
           # Attempt to extract a run id from the run context
-          if run_id = extract_run_id(run_context)
+          run_id = extract_run_id(run_context)
+          if run_id
             commit_log_comment = "Chef Run ID: #{run_id}"
           else
-            Chef::Log.debug("Could not extract a Chef run ID for the Junos commit log.")
+            Chef::Log.debug('Could not extract a Chef run ID for the Junos commit log.')
           end
 
           Netdev::Junos::ApiTransport.instance.commit_transaction!(commit_log_comment)
@@ -72,14 +73,20 @@ class JunosCommitTransactionHandler < Chef::Handler
     # If we are running on older Chef we'll go trolling the event
     # handlers for a resource reporter (which generates a run ID).
     else
-      if run_context.events.instance_variable_defined?("@subscribers")
-        if subscribers = run_context.events.instance_variable_get("@subscribers")
-          resource_reporter = subscribers.find do |handler|
-                                handler.kind_of?(Chef::ResourceReporter)
-                              end
-          resource_reporter.run_id if resource_reporter
-        end
+
+      resource_reporter = nil
+
+      if run_context.events.instance_variable_defined?('@subscribers')
+
+        subscribers = run_context.events.instance_variable_get('@subscribers')
+
+        resource_reporter = subscribers.find do |handler|
+          handler.kind_of?(Chef::ResourceReporter)
+        end if subscribers
+
       end
+
+      resource_reporter.run_id if resource_reporter
     end
   end
 end
