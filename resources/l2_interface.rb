@@ -24,8 +24,8 @@ default_action :create
 attribute :description,     :kind_of => String
 attribute :untagged_vlan,   :kind_of => String
 attribute :tagged_vlans,    :kind_of => Array
-attribute :vlan_tagging,    :kind_of => [TrueClass, FalseClass]
 attribute :l2_interface_name, :kind_of => String, :name_attribute => true, :required => true
+attribute :vlan_tagging,      :kind_of => [TrueClass, FalseClass], :default => false
 
 identity_attr :l2_interface_name
 state_attrs :description, :untagged_vlan, :tagged_vlans, :vlan_tagging
