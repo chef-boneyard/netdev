@@ -17,20 +17,19 @@
 # limitations under the License.
 #
 
-shared_context 'provider_junos' do
+module Netdev
+  module Provider
+    module Common
+      # Common methods shared by all netdev_*_junos providers.
+      module Junos
 
-  let(:junos_client) { double('junos_client', :managed_resource => managed_resource) }
+        def pretty_print_updated_values(updated_values)
+          updated_values.map do |key, value|
+            "#{key} => #{value}"
+          end.join(', ')
+        end
 
-  before do
-    Netdev::Junos::ApiClient.stub(:new).and_return(junos_client)
-  end
-
-  let(:chef_run) do
-    ChefSpec::ChefRunner.new(:step_into => [resource_subject])
-  end
-
-  # Helpers
-  def pending_lwrp_testability
-    pending('Waiting for ChefSpec to add better testibility to LWRPs')
+      end
+    end
   end
 end

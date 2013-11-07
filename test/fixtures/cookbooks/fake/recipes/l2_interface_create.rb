@@ -20,7 +20,6 @@
 include_recipe 'fake::vlan_create'
 
 netdev_l2_interface 'ge-0/0/0' do
-  description 'All your l2 interfaces are belong to Chef'
   tagged_vlans %w{ chef-test }
   vlan_tagging true
   action :create

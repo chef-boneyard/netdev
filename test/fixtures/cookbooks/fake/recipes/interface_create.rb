@@ -23,3 +23,8 @@ netdev_interface 'ge-0/0/0' do
   duplex 'full'
   action :create
 end
+
+netdev_interface 'ge-0/0/1' do
+  description 'Using some defaults'
+  action :create
+end

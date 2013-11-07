@@ -17,6 +17,16 @@
 # limitations under the License.
 #
 
+# Deactivate the layer 2 interfaces. We need to remove these interfaces
+# from logical unit 0 before they can be aggregated links
+netdev_l2_interface 'ge-0/0/1' do
+  action :delete
+end
+
+netdev_l2_interface 'ge-0/0/2' do
+  action :delete
+end
+
 netdev_lag 'ae0' do
   links %w{ ge-0/0/1 ge-0/0/2 }
   minimum_links 1

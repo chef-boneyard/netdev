@@ -21,13 +21,13 @@
 actions :create, :delete
 default_action :create
 
-attribute :name,            :kind_of => String, :name_attribute => true, :required => true
-attribute :description,     :kind_of => String
-attribute :untagged_vlan,   :kind_of => String
-attribute :tagged_vlans,    :kind_of => Array
-attribute :vlan_tagging,    :kind_of => [TrueClass, FalseClass]
+attribute :l2_interface_name, :kind_of => String, :name_attribute => true, :required => true
+attribute :description,       :kind_of => String # default is auto-generated in Netdev::Resource::Common#initialize
+attribute :untagged_vlan,     :kind_of => String
+attribute :tagged_vlans,      :kind_of => Array
+attribute :vlan_tagging,      :kind_of => [TrueClass, FalseClass], :default => false
 
-identity_attr :name
+identity_attr :l2_interface_name
 state_attrs :description, :untagged_vlan, :tagged_vlans, :vlan_tagging
 
 include Netdev::Resource::Common

@@ -18,6 +18,7 @@
 #
 
 begin
+  require 'chef/handler'
   require ' net/netconf/exception'
 rescue LoadError
   msg  = 'Could not load the junos-ez-stdlib gem...'
@@ -38,10 +39,11 @@ class JunosCommitTransactionHandler < Chef::Handler
           commit_log_comment = nil
 
           # Attempt to extract a run id from the run context
-          if run_id = extract_run_id(run_context)
+          run_id = extract_run_id(run_context)
+          if run_id
             commit_log_comment = "Chef Run ID: #{run_id}"
           else
-            Chef::Log.debug("Could not extract a Chef run ID for the Junos commit log.")
+            Chef::Log.debug('Could not extract a Chef run ID for the Junos commit log.')
           end
 
           Netdev::Junos::ApiTransport.instance.commit_transaction!(commit_log_comment)
@@ -51,9 +53,18 @@ class JunosCommitTransactionHandler < Chef::Handler
           Chef::Log.info('Rolled back pending Junos candidate configuration changes')
         end
       rescue Netconf::RpcError => e
-        Chef::Log.error("Could not complete Junos configuration transaction: #{e}")
+        failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
+        Chef::Log.fatal(failure_msg)
+        raise(failure_msg)
       end
     end
+  end
+
+  # We have to override this method so we can force a non-zero exit on
+  # transaction commit failures.
+  def run_report_safely(run_status)
+    run_report_unsafe(run_status)
+    @run_status = nil
   end
 
   private
@@ -72,14 +83,20 @@ class JunosCommitTransactionHandler < Chef::Handler
     # If we are running on older Chef we'll go trolling the event
     # handlers for a resource reporter (which generates a run ID).
     else
-      if run_context.events.instance_variable_defined?("@subscribers")
-        if subscribers = run_context.events.instance_variable_get("@subscribers")
-          resource_reporter = subscribers.find do |handler|
-                                handler.kind_of?(Chef::ResourceReporter)
-                              end
-          resource_reporter.run_id if resource_reporter
-        end
+
+      resource_reporter = nil
+
+      if run_context.events.instance_variable_defined?('@subscribers')
+
+        subscribers = run_context.events.instance_variable_get('@subscribers')
+
+        resource_reporter = subscribers.find do |handler|
+          handler.kind_of?(Chef::ResourceReporter)
+        end if subscribers
+
       end
+
+      resource_reporter.run_id if resource_reporter
     end
   end
 end

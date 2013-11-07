@@ -19,6 +19,7 @@
 # limitations under the License.
 #
 
+include Netdev::Provider::Common::Junos
 use_inline_resources
 
 action :create do
@@ -32,7 +33,7 @@ action :create do
                                                            current_values)
   unless updated_values.empty?
     message  = "create interface #{new_resource.name} with values:"
-    message << " #{updated_values.map { |e| e.join(" => ")}.join(", ")}"
+    message << " #{pretty_print_updated_values(updated_values)}"
     converge_by(message) do
       junos_client.write!
     end
@@ -51,6 +52,11 @@ def load_current_resource
   Chef::Log.info "Loading current resource #{new_resource.name}"
 
   @current_resource = Chef::Resource::NetdevInterface.new(new_resource.name)
+  @current_resource.interface_name(new_resource.interface_name)
+  # We want to override the default description generated for this
+  # resource. Hacky workaround for the fact Chef::Resource#set_or_return
+  # won't let us nil out an attribute.
+  @current_resource.instance_variable_set('@description', nil)
 
   if (port = junos_client.managed_resource) && port.exists?
 
@@ -80,5 +86,5 @@ end
 private
 
 def junos_client
-  @junos_client ||= Netdev::Junos::ApiClient::L1ports.new(new_resource.name)
+  @junos_client ||= Netdev::Junos::ApiClient::L1ports.new(new_resource.interface_name)
 end
