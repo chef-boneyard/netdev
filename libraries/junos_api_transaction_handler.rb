@@ -18,6 +18,7 @@
 #
 
 begin
+  require 'chef/handler'
   require ' net/netconf/exception'
 rescue LoadError
   msg  = 'Could not load the junos-ez-stdlib gem...'

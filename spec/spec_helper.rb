@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-require 'berkshelf'
 require 'chefspec'
+require 'chefspec/berkshelf'
 
 # load all shared examples and shared contexts
 Dir[File.expand_path('../support/**/*.rb', __FILE__)].each do |file|
@@ -37,12 +37,15 @@ Dir[File.join(libs, '*.rb')].each do |lib|
   require File.basename(lib, '.rb')
 end
 
-Berkshelf.ui.mute do
-  berksfile = Berkshelf::Berksfile.from_file('Berksfile')
-  berksfile.install(:path => 'vendor/cookbooks')
-end
-
 RSpec.configure do |config|
+  # ChefSpec config
+
+  # Specify the Chef log_level (default: :warn)
+  config.log_level = :error
+
+  # Specify the path to a local JSON file with Ohai data (default: nil)
+  config.path = 'test/fixtures/platforms/junos/13.2X50-D10.2.json'
+
   # Use color in STDOUT
   config.color_enabled = true
 
