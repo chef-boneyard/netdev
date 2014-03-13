@@ -1,0 +1,9 @@
+platforms:
+- name: junos-13.2
+  driver:
+    # Set the login user of the test switch; defaults to $USER.
+    username: <%= ENV['USER'] %>
+    # Set the ipaddress or DNS name of the test switch.
+    host: some.switch.ip
+    # Set the port sshd is listening on; defaults to 22.
+    port: 22

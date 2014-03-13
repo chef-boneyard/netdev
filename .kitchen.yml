@@ -1,22 +1,25 @@
-driver_plugin: proxy
-driver_config:
-  # The Chef for Junos package does not exist in Omnitruck yet.
+driver:
+  name: proxy
+  reset_command: cli -c 'configure; rollback rescue; commit'
+
+provisioner:
+  name: chef_solo
+  root_path: /var/tmp/kitchen
+  # The Chef for Junos package does not exist on Omnitruck yet.
   require_chef_omnibus: false
   # `sudo` does not exist on the switches
   sudo: false
 
+busser:
+  # `sudo` does not exist on the switches
+  sudo: false
+  root_path: /var/tmp/busser
+  # Chef is installed into a non-Omnibus (/opt/chef) path
+  ruby_bindir: /opt/sdk/chef/bin
+  busser_bin: /opt/sdk/chef/bin/ruby /var/tmp/busser/gems/bin/busser
+
 platforms:
-- name: junos-13.2X50-D10.2
-  driver_config:
-    # Chef is installed into a non-Omnibus (/opt/chef) path
-    ruby_binpath: /opt/sdk/juniper/bin
-    # Set the login user of the test switch; defaults to $USER.
-    username: <%= ENV['KITCHEN_JUNOS_132X50_USER'] || ENV['USER'] %>
-    # Set the ipaddress or DNS name of the test switch.
-    host: <%= ENV['KITCHEN_JUNOS_132X50_HOST'] %>
-    # Set the port sshd is listening on; defaults to 22.
-    port: <%= ENV['KITCHEN_JUNOS_132X50_PORT'] || 22 %>
-    reset_command: cli -c 'configure; rollback rescue; commit'
+- name: junos-13.2
 
 suites:
 - name: interface
