@@ -26,7 +26,7 @@ shared_context 'provider_junos' do
   end
 
   let(:chef_run) do
-    ChefSpec::ChefRunner.new(:step_into => [resource_subject])
+    ChefSpec::Runner.new(:step_into => [resource_subject])
   end
 
   # Helpers
