@@ -54,7 +54,7 @@ describe 'netdev_interface_junos provider' do
 
   describe '#action_create' do
     it 'creates the interface if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).twice.and_return({ :description => 'poopy' })
+      junos_client.should_receive(:updated_changed_properties).twice.and_return(:description => 'poopy')
       junos_client.should_receive(:write!).twice.with(no_args)
       chef_run.converge('interface::create')
     end

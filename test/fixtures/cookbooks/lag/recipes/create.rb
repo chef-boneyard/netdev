@@ -28,7 +28,7 @@ netdev_l2_interface 'ge-0/0/2' do
 end
 
 netdev_lag 'ae0' do
-  links %w{ ge-0/0/1 ge-0/0/2 }
+  links %w( ge-0/0/1 ge-0/0/2 )
   minimum_links 1
   lacp 'disable'
   action :create

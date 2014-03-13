@@ -20,7 +20,7 @@
 include_recipe 'vlan::create'
 
 netdev_l2_interface 'ge-0/0/0' do
-  tagged_vlans %w{ chef-test }
+  tagged_vlans %w( chef-test )
   vlan_tagging true
   action :create
 end

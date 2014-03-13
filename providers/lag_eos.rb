@@ -62,7 +62,6 @@ def load_current_resource
   else
     Chef::Log.info "Lag interface #{@new_resource.name} doesn't exist"
   end
-
 end
 
 def resource_exists?
@@ -71,7 +70,7 @@ def resource_exists?
   lags.key?(@new_resource.lag_name)
 end
 
-def has_changed?(curres, newres)
+def changed?(curres, newres)
   curres != newres && !newres.nil?
 end
 
@@ -89,9 +88,9 @@ end
 
 def edit_lag
   params = []
-  (params << '--links' << new_resource.links.join(',')) if has_changed?(current_resource.links, new_resource.links)
-  (params << '--minimum_links' << new_resource.minimum_links) if has_changed?(current_resource.minimum_links, new_resource.minimum_links)
-  (params << '--lacp' << new_resource.lacp) if has_changed(current_resource.lacp, new_resource.lacp)
+  (params << '--links' << new_resource.links.join(',')) if changed?(current_resource.links, new_resource.links)
+  (params << '--minimum_links' << new_resource.minimum_links) if changed?(current_resource.minimum_links, new_resource.minimum_links)
+  (params << '--lacp' << new_resource.lacp) if changed(current_resource.lacp, new_resource.lacp)
 
   execute 'netdev lag edit' do
     command "netdev lag edit #{new_resource.lag_name} #{params.join(' ')}"

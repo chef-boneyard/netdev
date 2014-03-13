@@ -22,13 +22,11 @@ module Netdev
     module Common
       # Common methods shared by all netdev_*_junos providers.
       module Junos
-
         def pretty_print_updated_values(updated_values)
           updated_values.map do |key, value|
             "#{key} => #{value}"
           end.join(', ')
         end
-
       end
     end
   end

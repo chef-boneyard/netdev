@@ -62,7 +62,6 @@ def load_current_resource
   else
     Chef::Log.info "Vlan #{@new_resource.name} (#{@new_resource.vlan_id}) doesn't exist"
   end
-
 end
 
 def resource_exists?

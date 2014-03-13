@@ -34,7 +34,7 @@ describe 'netdev_vlan_junos provider' do
 
   describe '#action_create' do
     it 'creates the vlan if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).and_return({ :description => 'poopy' })
+      junos_client.should_receive(:updated_changed_properties).and_return(:description => 'poopy')
       junos_client.should_receive(:write!).with(no_args)
       chef_run.converge('vlan::create')
     end
