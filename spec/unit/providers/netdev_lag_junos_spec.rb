@@ -46,19 +46,19 @@ describe 'netdev_lag_junos provider' do
     it 'creates the link aggregation group if properties have changed' do
       junos_client.should_receive(:updated_changed_properties).and_return({ :minimum_links => 1 })
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('fake::lag_create')
+      chef_run.converge('lag::create')
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('fake::lag_create')
+      chef_run.converge('lag::create')
     end
   end
 
   describe '#action_delete' do
     it 'deletes the link aggregation group' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('fake::lag_delete')
+      chef_run.converge('lag::delete')
     end
   end
 end

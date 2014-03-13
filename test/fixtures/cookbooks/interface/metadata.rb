@@ -1,0 +1,2 @@
+name    'interface'
+depends 'netdev'

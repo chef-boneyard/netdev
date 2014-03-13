@@ -38,19 +38,19 @@ describe 'netdev_l2_interface_junos provider' do
     it 'creates the layer 2 interface if properties have changed' do
       junos_client.should_receive(:updated_changed_properties).and_return({ :description => 'poopy' })
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('fake::l2_interface_create')
+      chef_run.converge('l2_interface::create')
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('fake::l2_interface_create')
+      chef_run.converge('l2_interface::create')
     end
   end
 
   describe '#action_delete' do
     it 'deletes the layer 2 interface' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('fake::l2_interface_delete')
+      chef_run.converge('l2_interface::delete')
     end
   end
 end

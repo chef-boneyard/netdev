@@ -56,19 +56,19 @@ describe 'netdev_interface_junos provider' do
     it 'creates the interface if properties have changed' do
       junos_client.should_receive(:updated_changed_properties).twice.and_return({ :description => 'poopy' })
       junos_client.should_receive(:write!).twice.with(no_args)
-      chef_run.converge('fake::interface_create')
+      chef_run.converge('interface::create')
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).twice.and_return({})
-      chef_run.converge('fake::interface_create')
+      chef_run.converge('interface::create')
     end
   end
 
   describe '#action_delete' do
     it 'deletes the interface' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('fake::interface_delete')
+      chef_run.converge('interface::delete')
     end
   end
 end

@@ -20,14 +20,10 @@ platforms:
 
 suites:
 - name: interface
-  run_list:
-  - recipe[fake::interface_create]
+  run_list: interface::create
 - name: l2_interface
-  run_list:
-  - recipe[fake::l2_interface_create]
+  run_list: l2_interface::create
 - name: lag
-  run_list:
-  - recipe[fake::lag_create]
+  run_list: lag::create
 - name: vlan
-  run_list:
-  - recipe[fake::vlan_create]
+  run_list: vlan::create

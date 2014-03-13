@@ -1,0 +1,2 @@
+name    'lag'
+depends 'netdev'
