@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,6 +34,7 @@ module Netdev
 
       attr_accessor :connection_open
       attr_accessor :transaction_open
+      alias_method  :transaction_open?, :transaction_open
 
       def_delegator :@transport, :[]
 
@@ -69,7 +67,7 @@ module Netdev
       def start_transaction!
         # Acquire an exclusive lock on the configuration
         @transport_config.lock!
-        Chef::Log.info("#{to_s}: Acquired exclusive Junos configuration lock")
+        Chef::Log.info("#{self}: Acquired exclusive Junos configuration lock")
         @transaction_open = true
       end
 
@@ -83,10 +81,6 @@ module Netdev
         @transport_config.unlock!
         Chef::Log.info('Released exclusive Junos configuration lock')
         @transaction_open = false
-      end
-
-      def transaction_open?
-        !!@transaction_open
       end
 
       private
@@ -106,7 +100,6 @@ module Netdev
         end
         @connection_open = true
       end
-
     end
   end
 end

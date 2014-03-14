@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +18,6 @@ module Netdev
   module Resource
     # Common methods shared by all netdev_* resources.
     module Common
-
       attr_accessor :active, :exists
       alias_method :active?, :active
       alias_method :exists?, :exists
@@ -64,10 +60,10 @@ module Netdev
       # junos / Juniper / http://en.wikipedia.org/wiki/Junos
       # eos / Arista / http://en.wikipedia.org/wiki/Extensible_Operating_System#Extensible_Operating_System
       #
-      KNOWN_PLATFORMS = %w{
+      KNOWN_PLATFORMS = %w(
         eos
         junos
-      }
+      )
 
       # Given a resource name attempts to locate a provider based on
       # platform name. This all relies on convention.
@@ -78,7 +74,6 @@ module Netdev
       #   Chef::Provider::NetdevInterfaceJunos
       #
       def platform_provider_for_resource(resource_name, platform)
-
         # Raise a nice exception if a non-supported platform is
         # passed in.
         unless KNOWN_PLATFORMS.include?(platform)
@@ -86,7 +81,7 @@ module Netdev
           error_message << " by the '#{resource_name}' resource."
           error_message << ' Supported platforms include: '
           error_message << KNOWN_PLATFORMS.join(', ')
-          raise error_message
+          fail error_message
         end
 
         provider_name = "#{resource_name}_#{platform}"
@@ -102,10 +97,10 @@ module Netdev
         begin
 
           provider_class = Chef::Provider.const_get(provider_class_name)
-          Chef::Log.debug("#{self.class.to_s}: using #{log_message}")
+          Chef::Log.debug("#{self.class}: using #{log_message}")
 
         rescue NameError
-          Chef::Log.warn("#{self.class.to_s}: could not load #{log_message}")
+          Chef::Log.warn("#{self.class}: could not load #{log_message}")
         end
 
         provider_class

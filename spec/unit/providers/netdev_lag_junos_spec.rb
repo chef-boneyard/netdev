@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +23,7 @@ describe 'netdev_lag_junos provider' do
 
   let(:managed_resource) do
     lag = double('lag', :exists? => true)
-    allow(lag).to receive(:[]).with(:links) { %w{ ge-0/0/1 ge-0/0/2 } }
+    allow(lag).to receive(:[]).with(:links) { %w( ge-0/0/1 ge-0/0/2 ) }
     allow(lag).to receive(:[]).with(:minimum_links) { 2 }
     allow(lag).to receive(:[]).with(:lacp) { 'disabled' }
     allow(lag).to receive(:[]).with(:_active) { true }
@@ -44,21 +41,21 @@ describe 'netdev_lag_junos provider' do
 
   describe '#action_create' do
     it 'creates the link aggregation group if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).and_return({ :minimum_links => 1 })
+      junos_client.should_receive(:updated_changed_properties).and_return(:minimum_links => 1)
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('fake::lag_create')
+      chef_run.converge('lag::create')
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('fake::lag_create')
+      chef_run.converge('lag::create')
     end
   end
 
   describe '#action_delete' do
     it 'deletes the link aggregation group' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('fake::lag_delete')
+      chef_run.converge('lag::delete')
     end
   end
 end

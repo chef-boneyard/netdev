@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,13 +19,11 @@ module Netdev
     module Common
       # Common methods shared by all netdev_*_junos providers.
       module Junos
-
         def pretty_print_updated_values(updated_values)
           updated_values.map do |key, value|
             "#{key} => #{value}"
           end.join(', ')
         end
-
       end
     end
   end

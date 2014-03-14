@@ -3,7 +3,7 @@
 # Resource:: interface
 #
 # Copyright 2013 Arista Networks
-# Copyright 2013 Opscode, Inc.
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ attribute :interface_name, :kind_of => String, :name_attribute => true, :require
 attribute :enable,         :kind_of => [TrueClass, FalseClass], :default => true
 attribute :description,    :kind_of => String # default is auto-generated in Netdev::Resource::Common#initialize
 attribute :mtu,            :kind_of => Integer
-attribute :speed,          :kind_of => String, :equal_to => %w{ auto 100m 1g 10g 40g 56g 100g }, :default => 'auto'
-attribute :duplex,         :kind_of => String, :equal_to => %w{ auto half full }, :default => 'auto'
+attribute :speed,          :kind_of => String, :equal_to => %w( auto 100m 1g 10g 40g 56g 100g ), :default => 'auto'
+attribute :duplex,         :kind_of => String, :equal_to => %w( auto half full ), :default => 'auto'
 
 identity_attr :interface_name
 state_attrs :enable, :description, :mtu, :speed, :duplex

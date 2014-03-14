@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +23,7 @@ shared_context 'provider_junos' do
   end
 
   let(:chef_run) do
-    ChefSpec::ChefRunner.new(:step_into => [resource_subject])
+    ChefSpec::Runner.new(:step_into => [resource_subject])
   end
 
   # Helpers

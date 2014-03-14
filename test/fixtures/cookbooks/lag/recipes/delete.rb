@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,9 +14,6 @@
 # limitations under the License.
 #
 
-netdev_vlan 'proving the resource name can differ from the vlan_name' do
-  vlan_name 'chef-test'
-  vlan_id 2
-  description "Ain't no party like a vlan party! YO YO YO"
-  action :create
+netdev_lag 'ae0' do
+  action :delete
 end

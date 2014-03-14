@@ -1,19 +1,19 @@
 netdev Cookbook
 ===============
+[![Build Status](https://secure.travis-ci.org/opscode-cookbooks/omnibus.png?branch=master)](http://travis-ci.org/opscode-cookbooks/netdev)
 
 Provides a set of vendor-agnostic resources for managing networking devices.
+
+This project is managed by the CHEF Release Engineering team. For more information on the Release Engineering team's contribution, triage, and release process, please consult the [CHEF Release Engineering OSS Management Guide](https://docs.google.com/a/opscode.com/document/d/1oJB0vZb_3bl7_ZU2YMDBkMFdL-EWplW1BJv_FXTUOzg/edit).
 
 Requirements
 ------------
 
-* Chef 11+
-* Supported switch from Arista or Juniper.
-
-TODO: add links to vendor specific requirements
+- Chef 11.0.0+
+- Supported networking device from Arista or Juniper.
 
 Usage
 -----
-
 Add a dependency on netdev to your cookbook's `metadata.rb`
 
 ```ruby
@@ -23,155 +23,64 @@ depends 'netdev'
 Resources/Providers
 -------------------
 
-### netdev_interface
+All resources are fully documented on [Chef's offical documentation site](http://docs.opscode.com/junos.html).
 
-This resource provides an abstraction for managing physical interfaces on network elements.
-
-#### Actions
-Action | Description | Default |
+Resource | Description | Example Usage |
 -------|-------------|---------|
-create | Creates the physical interface. | Yes |
-delete | Deletes the physical interface. |     |
+__netdev_interface__ | This resource provides an abstraction for managing physical interfaces on network elements. | [netdev_interface integation test fixture](test/fixtures/cookbooks/interface/recipes/create.rb)
+__netdev\_l2\_interface__ | This resource provides an abstraction for creating and deleting layer 2 interfaces on network devices. | [netdev_l2_interface integation test fixture](test/fixtures/cookbooks/l2_interface/recipes/create.rb).
+__netdev\_lag__ | This resource provides an abstraction for creating and deleting link aggregation group interfaces. | [netdev_lag integation test fixture](test/fixtures/cookbooks/lag/recipes/create.rb).
+__netdev\_vlan__ | This resource provides an abstraction for creating and deleting VLANs. | [netdev_vlan integation test fixture](test/fixtures/cookbooks/vlan/recipes/create.rb).
 
-#### Attributes
-Attribute      | Description | Type | Default |
----------------|-------------|------|---------|
-interface_name | The interface name, for example, `ge-0/0/0` | String | current resource name |
-enable         | Configures the interface as administratively enabled or disabled | Boolean | `true` |
-description    | Configures the interface description | String | `Chef created interface: RESOURCE_NAME` |
-mtu            | Configures the maximum transmission unit (MTU) of the interface. | Integer | `nil` |
-speed          | Configures the interface speed. Acceptable values include: `auto`, `100m`, `1g`, `10g`, `40g`, `56g` and `100g`| String | `auto` |
-duplex         | Configures the interface duplex mode. Acceptable values include: `auto`, `half` and `full` | String | `auto` |
+Testing
+-------
+You can run the tests in this cookbook using Rake:
 
-#### Examples
+```text
+rake integration  # Run Test Kitchen integration tests
+rake style        # Run all style checks
+rake style:chef   # Lint Chef cookbooks
+rake style:ruby   # Run Ruby style checks
+rake travis:ci    # Run tests on Travis
+```
 
-Please see the [netdev_interface integation test fixture](test/fixtures/cookbooks/fake/recipes/interface_create.rb).
+Test Kitchen
+------------
 
-### netdev\_l2\_interface
+Test Kitchen 1.0.0+ ships with a [proxy driver](https://github.com/opscode/test-kitchen/commit/dc6af31bcfbc2decbfda4d905a185affe0ff101a) that proxies commands through to a test instance whose lifecycle is not managed by Test Kitchen. This driver is useful for testing against long-lived non-ephemeral test instances that are simply "reset" between test runs. This driver is also perfect for testing against physical network equipment!
 
-This resource provides an abstraction for creating and deleting layer 2 interfaces on network devices.
+You will need to specify the location and login details for the switch you will be running Test Kitchen against. This should be done in a `.kitchen.local.yml` file:
 
-#### Actions
-Action | Description | Default |
--------|-------------|---------|
-create | Creates the layer 2 interface. | Yes |
-delete | Deletes the layer 2 interface. |     |
+```yaml
+platforms:
+- name: junos-13.2
+  driver:
+    # Set the login user of the test switch
+    username: schisamo
+    # Set the ipaddress or DNS name of the test switch.
+    host: 10.66.44.10
+    # Set the port sshd is listening on; defaults to 22.
+    port: 22
+```
 
-#### Attributes
-Attribute           | Description | Type | Default |
---------------------|-------------|----- |-------- |
-l2\_interface\_name | The layer 2 interface name, for example, `ge-0/0/0` | String | current resource name |
-description         | Configures the interface description | String | `Chef created l2_interface: RESOURCE_NAME` |
-untagged_vlan       | Configures the specified VLAN as the native VLAN on an interface. The value is the name of the VLAN for untagged packets. | String | `nil` |
-tagged_vlans        | Configures one or more VLANs that can carry traffic on a trunk interface. This value is an array of VLAN names. | Array | `nil` |
-vlan_tagging        | Configures the mode for the given port as access or trunk. A value of `true` configures the port in trunk mode, in which tagged packets are processed. A value of `false`, which is the default, configures the port in access mode, in which tagged packets are discarded. | Boolean | `true`, `false` | `false` |
-
-#### Examples
-
-Please see the [netdev_l2_interface integation test fixture](test/fixtures/cookbooks/fake/recipes/l2_interface_create.rb).
-
-### netdev_lag
-
-This resource provides an abstraction for creating and deleting link aggregation group interfaces.
-
-#### Actions
-Action | Description | Default |
--------|-------------|---------|
-create | Creates the link aggregration group. | Yes |
-delete | Deletes the link aggregration group. |     |
-
-#### Attributes
-Attribute     | Description | Type | Default |
----------     |------------ |----- |-------- |
-lag_name      | The LAG name excluding any logical unit number, for example, `ae0` | String | current resource name |
-links         | Configures one or more physical interfaces as members of the LAG bundle. The value is an array of interfaces names. | Array | `nil` |
-minimum_links | Integer that defines the minimum number of physical links that must be in the up state to declare the LAG port in the up state. | Integer | `nil` |
-lacp          | Specifies the Link Aggregation Control Protocol (LACP) mode. Acceptable values include: `disabled` (LACP is not used), `active` (LACP active mode) and `passive` (LACP passive mode) | String | disable |
-
-#### Examples
-
-Please see the [netdev_lag integation test fixture](test/fixtures/cookbooks/fake/recipes/lag_create.rb).
-
-### netdev_vlan
-
-This resource provides an abstraction for creating and deleting VLANs.
-
-#### Actions
-Action | Description | Default |
--------|-------------|---------|
-create | Creates the physical interface. | Yes |
-delete | Deletes the physical interface. |     |
-
-#### Attributes
-Attribute   | Description | Type | Default |
-------------|------------ |----- |-------- |
-vlan_name   | The name of the VLAN, which must be a VLAN name that is valid on the agent node. | String | current resource name |
-vlan_id     | Defines the VLAN ID. Valid VLAN IDs range from 1 through 4094. | Integer |  |
-description | Configures the VLAN description | String | `Chef created vlan: RESOURCE_NAME` |
-
-#### Examples
-
-Please see the [netdev_vlan integation test fixture](test/fixtures/cookbooks/fake/recipes/vlan_create.rb).
-
-Development
------------
-This section details "quick development" steps. For a detailed explanation, see [[Contributing.md]].
-
-1. Clone this repository from GitHub:
-
-        $ git clone git@github.com:opscode-cookbooks/netdev.git
-
-2. Create a git branch
-
-        $ git checkout -b my_bug_fix
-
-3. Install dependencies:
-
-        $ bundle install
-
-4. Make your changes/patches/fixes, committing appropiately
-5. **Write tests**
-6. Run the tests:
-    - `bundle exec foodcritic -f any .`
-    - `bundle exec rspec`
-    - `bundle exec rubocop`
-
-    In detail:
-    - Foodcritic will catch any Chef-specific style errors
-    - RSpec will run the unit tests
-    - Rubocop will check for Ruby-specific style errors
-
-Integration testing with Test-Kitchen
--------------------------------------
-
-Test Kitchen 1.0.0.beta.4+ ships with a [proxy driver](https://github.com/opscode/test-kitchen/commit/dc6af31bcfbc2decbfda4d905a185affe0ff101a)
-that proxies commands through to a test instance whose lifecycle is not managed
-by Test Kitchen. This driver is useful for testing against long-lived
-non-ephemeral test instances that are simply "reset" between test runs. This
-driver is also perfect for testing against physical network equipment!
-
-Test Kitchen runs, converges and tests the resources in this cookbook
-with the command:
+This repository ships with an example file which can easily be copied into place:
 
 ```
-bundle exec kitchen test
+cp kitchen.local.example.yml kitchen.local.yml
 ```
 
 ### Juniper Equipment
 
 Requirements:
 
-* Juniper switch/router running `JUNOS 13.2X50-D10.2` (other Junos versions
+* Juniper switch/router running `JUNOS 13.2*` (other Junos versions
 may work).
 * Switch is [configured for external remote access via SSH](http://www.juniper.net/techpubs/en_US/junos/topics/task/configuration/ssh-services-configuring.html).
 * A valid user account on the test switch [configured for paswordless key-based SSH access](http://pileofbits.com/2013/03/11/junos-ssh-key-authentication/).
 
-Test run resets on Juniper device is achieved using Juno's [rescue configuration](http://www.juniper.net/techpubs/en_US/junos11.4/topics/task/configuration/junos-software-rescue-configuration-creating-restoring.html)
-feature. A _rescue configuration_ allows you to define a known working configuration or a
-configuration with a known state that you can roll back to at any time.
+Test run resets on Juniper device is achieved using Juno's [rescue configuration](http://www.juniper.net/techpubs/en_US/junos11.4/topics/task/configuration/junos-software-rescue-configuration-creating-restoring.html) feature. A _rescue configuration_ allows you to define a known working configuration or a configuration with a known state that you can roll back to at any time.
 
-Creating a rescue configuration is easy. SSH into your switch and run the following
-command:
+Creating a rescue configuration is easy. SSH into your switch and run the following command:
 
 ```
 {master:0}
@@ -191,19 +100,14 @@ sshd `port` of the switch being tested against.
 
 Currently not supported.
 
-License and Authors
--------------------
+License & Authors
+-----------------
 
-|               |                                          |
-|:--------------|:-----------------------------------------|
-| **Author**    | Peter Sprygada (Arista Networks)         |
-| **Author**    | Jeremy Schulman (Juniper Networks)       |
-| **Author**    | Seth Chisamore (Opscode, Inc.)           |
-|               |                                          |
-| **Copyright** | Copyright (c) 2013 Arista Networks       |
-| **Copyright** | Copyright (c) 2013 Juniper Networks      |
-| **Copyright** | Copyright (c) 2013 Opscode, Inc.         |
+- Author: Peter Sprygada (Arista Networks)
+- Author: Jeremy Schulman (Juniper Networks)
+- Author: Seth Chisamore (CHEF, Inc.)
 
+```text
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -215,3 +119,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```

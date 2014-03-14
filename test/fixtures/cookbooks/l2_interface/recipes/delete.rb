@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,4 +18,4 @@ netdev_l2_interface 'ge-0/0/0' do
   action :delete
 end
 
-include_recipe 'fake::vlan_delete'
+include_recipe 'vlan::delete'

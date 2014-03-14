@@ -64,7 +64,6 @@ def load_current_resource
   else
     Chef::Log.info "L2 interface #{@new_resource.name} doesn't exist"
   end
-
 end
 
 def resource_exists?
@@ -73,7 +72,7 @@ def resource_exists?
   interfaces.key?(@new_resource.l2_interface_name)
 end
 
-def has_changed?(curres, newres)
+def changed?(curres, newres)
   curres != newres && !newres.nil?
 end
 
@@ -92,10 +91,10 @@ end
 
 def edit_l2interface
   params = []
-  (params << '--description' << new_resource.description) if has_changed?(current_resource.description, new_resource.description)
-  (params << '--untagged_vlan' << new_resource.untagged_vlan) if has_changed?(current_resource.untagged_vlan, new_resource.untagged_vlan)
-  (params << '--tagged_vlans' << new_resource.tagged_vlans.join(',')) if has_changed?(current_resource.tagged_vlans, new_resource.tagged_vlans)
-  (params << '--vlan_tagging' << new_resource.vlan_tagging) if has_changed?(current_resource.vlan_tagging, new_resource.vlan_tagging)
+  (params << '--description' << new_resource.description) if changed?(current_resource.description, new_resource.description)
+  (params << '--untagged_vlan' << new_resource.untagged_vlan) if changed?(current_resource.untagged_vlan, new_resource.untagged_vlan)
+  (params << '--tagged_vlans' << new_resource.tagged_vlans.join(',')) if changed?(current_resource.tagged_vlans, new_resource.tagged_vlans)
+  (params << '--vlan_tagging' << new_resource.vlan_tagging) if changed?(current_resource.vlan_tagging, new_resource.vlan_tagging)
 
   execute 'netdev l2interface edit' do
     command "netdev l2interface edit #{new_resource.l2_interface_name} #{params.join(' ')}"

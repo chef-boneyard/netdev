@@ -3,7 +3,7 @@
 # Resource:: lag
 #
 # Copyright 2013 Arista Networks
-# Copyright 2013 Opscode, Inc.
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ default_action :create
 attribute :lag_name,      :kind_of => String, :name_attribute => true, :required => true
 attribute :links,         :kind_of => Array
 attribute :minimum_links, :kind_of => Integer
-attribute :lacp,          :kind_of => String, :equal_to => %w{ disable active passive }, :default => 'disable'
+attribute :lacp,          :kind_of => String, :equal_to => %w( disable active passive ), :default => 'disable'
 
 identity_attr :lag_name
 state_attrs :links, :minimum_links, :lacp

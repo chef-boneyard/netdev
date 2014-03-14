@@ -4,6 +4,8 @@ AllCops:
 
 AlignParameters:
   Enabled: false
+ClassLength:
+  Enabled: false
 Encoding:
   Enabled: false
 HashSyntax:

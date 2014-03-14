@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,21 +31,21 @@ describe 'netdev_vlan_junos provider' do
 
   describe '#action_create' do
     it 'creates the vlan if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).and_return({ :description => 'poopy' })
+      junos_client.should_receive(:updated_changed_properties).and_return(:description => 'poopy')
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('fake::vlan_create')
+      chef_run.converge('vlan::create')
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('fake::vlan_create')
+      chef_run.converge('vlan::create')
     end
   end
 
   describe '#action_delete' do
     it 'deletes the vlan' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('fake::vlan_delete')
+      chef_run.converge('vlan::delete')
     end
   end
 end

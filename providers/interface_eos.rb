@@ -24,11 +24,11 @@ end
 action :create do
   converge_by("create interface #{new_resource.name}") do
     params = Array.new
-    (params << '--admin' << new_resource.admin) if has_changed?(current_resource.admin, new_resource.admin)
-    (params << '--description' << new_resource.description) if has_changed?(current_resource.description, new_resource.description)
-    (params << '--mtu' << new_resource.mtu) if has_changed?(current_resource.mtu, new_resource.mtu)
-    (params << '--speed' << new_resource.speed) if has_changed?(current_resource.speed, new_resource.speed)
-    (params << '--duplex' << new_resource.duplex) if has_changed?(current_resource.duplex, new_resource.duplex)
+    (params << '--admin' << new_resource.admin) if changed?(current_resource.admin, new_resource.admin)
+    (params << '--description' << new_resource.description) if changed?(current_resource.description, new_resource.description)
+    (params << '--mtu' << new_resource.mtu) if changed?(current_resource.mtu, new_resource.mtu)
+    (params << '--speed' << new_resource.speed) if changed?(current_resource.speed, new_resource.speed)
+    (params << '--duplex' << new_resource.duplex) if changed?(current_resource.duplex, new_resource.duplex)
 
     execute 'netdev interface edit' do
       command "netdev interface edit #{new_resource.interface_name} #{params.join(' ')}"
@@ -59,10 +59,9 @@ def load_current_resource
   @current_resource.speed(interface['speed'])
   @current_resource.duplex(interface['duplex'])
   @current_resource.exists = true
-
 end
 
-def has_changed?(curres, newres)
+def changed?(curres, newres)
   curres != newres && !newres.nil?
 end
 

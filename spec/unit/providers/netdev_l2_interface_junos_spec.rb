@@ -1,8 +1,5 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright:: Copyright (c) 2013 Opscode, Inc.
-# License:: Apache License, Version 2.0
+# Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +25,7 @@ describe 'netdev_l2_interface_junos provider' do
     port = double('port', :exists? => true)
     allow(port).to receive(:[]).with(:description) { 'blahblahblah' }
     allow(port).to receive(:[]).with(:untagged_vlan) { 'default' }
-    allow(port).to receive(:[]).with(:tagged_vlans) { %w{ chef-test } }
+    allow(port).to receive(:[]).with(:tagged_vlans) { %w( chef-test ) }
     allow(port).to receive(:[]).with(:vlan_tagging) { true }
     allow(port).to receive(:[]).with(:_active) { true }
     port
@@ -36,21 +33,21 @@ describe 'netdev_l2_interface_junos provider' do
 
   describe '#action_create' do
     it 'creates the layer 2 interface if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).and_return({ :description => 'poopy' })
+      junos_client.should_receive(:updated_changed_properties).and_return(:description => 'poopy')
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('fake::l2_interface_create')
+      chef_run.converge('l2_interface::create')
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('fake::l2_interface_create')
+      chef_run.converge('l2_interface::create')
     end
   end
 
   describe '#action_delete' do
     it 'deletes the layer 2 interface' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('fake::l2_interface_delete')
+      chef_run.converge('l2_interface::delete')
     end
   end
 end
