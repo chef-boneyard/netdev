@@ -40,7 +40,6 @@ module Netdev
           :lag_ports => ::Junos::Ez::LAGports
         }
 
-        # STAND BACK...IT'S METAPROGRAMMING TIME
         KNOWN_RESOURCES.each_pair do |resource, provider_module|
 
           # Create a child class for each logical resource type. This forces

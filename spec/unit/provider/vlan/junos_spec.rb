@@ -16,38 +16,41 @@
 
 require 'spec_helper'
 
-describe 'netdev_l2_interface_junos provider' do
+describe Chef::Provider::NetdevVirtualLAN::Junos do
   include_context 'provider_junos'
 
-  let(:resource_subject) { 'netdev_l2_interface' }
-
   let(:managed_resource) do
-    port = double('port', :exists? => true)
-    allow(port).to receive(:[]).with(:description) { 'blahblahblah' }
-    allow(port).to receive(:[]).with(:untagged_vlan) { 'default' }
-    allow(port).to receive(:[]).with(:tagged_vlans) { %w( chef-test ) }
-    allow(port).to receive(:[]).with(:vlan_tagging) { true }
-    allow(port).to receive(:[]).with(:_active) { true }
-    port
+    vlan = double('vlan', :exists? => true)
+    allow(vlan).to receive(:[]).with(:vlan_id) { 2 }
+    allow(vlan).to receive(:[]).with(:description) { 'blahblahblah' }
+    allow(vlan).to receive(:[]).with(:_active) { true }
+    vlan
+  end
+
+  let(:new_resource) do
+    new_resource = Chef::Resource::NetdevVirtualLAN.new('chef-test')
+    new_resource.vlan_id(2)
+    new_resource.description("Ain't no party like a vlan party! YO YO YO")
+    new_resource
   end
 
   describe '#action_create' do
-    it 'creates the layer 2 interface if properties have changed' do
+    it 'creates the vlan if properties have changed' do
       junos_client.should_receive(:updated_changed_properties).and_return(:description => 'poopy')
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('l2_interface::create')
+      provider.run_action(:create)
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('l2_interface::create')
+      provider.run_action(:create)
     end
   end
 
   describe '#action_delete' do
-    it 'deletes the layer 2 interface' do
+    it 'deletes the vlan' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('l2_interface::delete')
+      provider.run_action(:delete)
     end
   end
 end

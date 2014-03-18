@@ -16,18 +16,22 @@
 
 shared_context 'provider_junos' do
 
-  let(:junos_client) { double('junos_client', :managed_resource => managed_resource) }
+  let(:junos_client) do
+    double('junos_client', :managed_resource => managed_resource)
+  end
+
+  let(:run_context) do
+    node        = Chef::Node.new
+    events      = Chef::EventDispatch::Dispatcher.new
+    run_context = Chef::RunContext.new(node, {}, events)
+    run_context
+  end
+
+  let(:provider) do
+    described_class.new(new_resource, run_context)
+  end
 
   before do
     Netdev::Junos::ApiClient.stub(:new).and_return(junos_client)
-  end
-
-  let(:chef_run) do
-    ChefSpec::Runner.new(:step_into => [resource_subject])
-  end
-
-  # Helpers
-  def pending_lwrp_testability
-    pending('Waiting for ChefSpec to add better testibility to LWRPs')
   end
 end
