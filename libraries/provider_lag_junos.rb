@@ -20,6 +20,7 @@
 require 'chef/resource'
 require 'chef/provider'
 
+require_relative '_helper'
 require_relative '_junos_api_client'
 require_relative 'resource_lag'
 
