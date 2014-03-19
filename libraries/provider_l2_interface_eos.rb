@@ -93,9 +93,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  platform: :eos,
-  resource: :netdev_l2_interface,
-  provider: Chef::Provider::NetdevL2Interface::EOS
-)

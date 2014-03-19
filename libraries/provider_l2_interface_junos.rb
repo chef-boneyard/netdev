@@ -90,9 +90,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  platform: :junos,
-  resource: :netdev_l2_interface,
-  provider: Chef::Provider::NetdevL2Interface::Junos
-)

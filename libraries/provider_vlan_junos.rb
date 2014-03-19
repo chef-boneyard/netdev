@@ -90,9 +90,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  platform: :junos,
-  resource: :netdev_vlan,
-  provider: Chef::Provider::NetdevVirtualLAN::Junos
-)

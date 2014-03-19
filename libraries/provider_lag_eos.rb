@@ -94,9 +94,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  platform: :eos,
-  resource: :netdev_lag,
-  provider: Chef::Provider::NetdevLinkAggregationGroup::EOS
-)
