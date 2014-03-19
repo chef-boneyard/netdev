@@ -20,6 +20,7 @@
 require 'chef/resource'
 require 'chef/provider'
 
+require_relative '_helper'
 require_relative 'resource_lag'
 
 class Chef
