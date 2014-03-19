@@ -33,11 +33,11 @@ describe Netdev::Junos::ApiTransport do
 
   describe 'delegated methods' do
     it { should respond_to(:[]) }
-
-    Netdev::Junos::ApiClient::KNOWN_RESOURCES.keys.each do |resource|
-      it { should respond_to(resource.to_sym) }
-    end
-
+    it { should respond_to(:l1_ports) }
+    it { should respond_to(:l2_ports) }
+    it { should respond_to(:ip_ports) }
+    it { should respond_to(:vlans) }
+    it { should respond_to(:lag_ports) }
     it { should respond_to(:unlock!) }
     it { should respond_to(:unlock!) }
     it { should respond_to(:commit?) }
