@@ -27,16 +27,16 @@ end
 # candidate configuration changes.
 class JunosCommitTransactionHandler < Chef::Handler
   def report
-    # Ensure handler is no-op in why-run mode and on non-Junos platforms.
+    # Ensure handler is no-op in why-run mode and non-Junos platforms.
     if (node['platform'] == 'junos') && !Chef::Config[:why_run]
       begin
         # on successful Chef-runs commit the transaction
         if success?
-
           commit_log_comment = nil
 
           # Attempt to extract a run id from the run context
           run_id = extract_run_id(run_context)
+
           if run_id
             commit_log_comment = "Chef Run ID: #{run_id}"
           else
@@ -80,19 +80,15 @@ class JunosCommitTransactionHandler < Chef::Handler
     # If we are running on older Chef we'll go trolling the event
     # handlers for a resource reporter (which generates a run ID).
     else
-
       resource_reporter = nil
-
       if run_context.events.instance_variable_defined?('@subscribers')
-
         subscribers = run_context.events.instance_variable_get('@subscribers')
-
-        resource_reporter = subscribers.find do |handler|
-          handler.kind_of?(Chef::ResourceReporter)
-        end if subscribers
-
+        if subscribers
+          resource_reporter = subscribers.find do |handler|
+            handler.kind_of?(Chef::ResourceReporter)
+          end
+        end
       end
-
       resource_reporter.run_id if resource_reporter
     end
   end

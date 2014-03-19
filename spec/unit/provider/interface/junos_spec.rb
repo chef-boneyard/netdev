@@ -16,10 +16,8 @@
 
 require 'spec_helper'
 
-describe 'netdev_interface_junos provider' do
+describe Chef::Provider::NetdevInterface::Junos do
   include_context 'provider_junos'
-
-  let(:resource_subject) { 'netdev_interface' }
 
   let(:managed_resource) do
     port = double('port', :exists? => true)
@@ -32,40 +30,52 @@ describe 'netdev_interface_junos provider' do
     port
   end
 
+  let(:new_resource) do
+    new_resource = Chef::Resource::NetdevInterface.new('ge-0/0/0')
+    new_resource.description('All your interfaces are belong to Chef')
+    new_resource.speed('1g')
+    new_resource.duplex('full')
+    new_resource
+  end
+
+  let(:provider) do
+    described_class.new(new_resource, run_context)
+  end
+
   describe '#load_current_resource' do
 
     describe 'wires managed_resource names to attribute names' do
       it 'translates :up to true' do
-        pending_lwrp_testability
+        pending
       end
 
       it 'translates :down to false' do
-        pending_lwrp_testability
+        pending
       end
 
       it 'translates any other value to nil' do
-        pending_lwrp_testability
+        pending
       end
     end
   end
 
   describe '#action_create' do
     it 'creates the interface if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).twice.and_return(:description => 'poopy')
-      junos_client.should_receive(:write!).twice.with(no_args)
-      chef_run.converge('interface::create')
+      junos_client.should_receive(:updated_changed_properties).once.and_return(:description => 'poopy')
+      junos_client.should_receive(:write!).once.with(no_args)
+      provider.run_action(:create)
     end
 
     it 'does nothing if properties are unchanged' do
-      junos_client.should_receive(:updated_changed_properties).twice.and_return({})
-      chef_run.converge('interface::create')
+      junos_client.should_receive(:updated_changed_properties).once.and_return({})
+      provider.run_action(:create)
     end
   end
 
   describe '#action_delete' do
     it 'deletes the interface' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('interface::delete')
+      provider.run_action(:delete)
     end
   end
 end

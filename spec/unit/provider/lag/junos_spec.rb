@@ -16,10 +16,8 @@
 
 require 'spec_helper'
 
-describe 'netdev_lag_junos provider' do
+describe Chef::Provider::NetdevLinkAggregationGroup::Junos do
   include_context 'provider_junos'
-
-  let(:resource_subject) { 'netdev_lag' }
 
   let(:managed_resource) do
     lag = double('lag', :exists? => true)
@@ -30,11 +28,22 @@ describe 'netdev_lag_junos provider' do
     lag
   end
 
-  describe '#load_current_resource' do
+  let(:new_resource) do
+    new_resource = Chef::Resource::NetdevLinkAggregationGroup.new('ae0')
+    new_resource.links(%w( ge-0/0/1 ge-0/0/2 ))
+    new_resource.minimum_links(1)
+    new_resource.lacp('disable')
+    new_resource
+  end
 
+  let(:provider) do
+    described_class.new(new_resource, run_context)
+  end
+
+  describe '#load_current_resource' do
     describe 'wires managed_resource names to attribute names' do
       it 'translate disabled to disable' do
-        pending_lwrp_testability
+        pending
       end
     end
   end
@@ -43,19 +52,19 @@ describe 'netdev_lag_junos provider' do
     it 'creates the link aggregation group if properties have changed' do
       junos_client.should_receive(:updated_changed_properties).and_return(:minimum_links => 1)
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('lag::create')
+      provider.run_action(:create)
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('lag::create')
+      provider.run_action(:create)
     end
   end
 
   describe '#action_delete' do
     it 'deletes the link aggregation group' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('lag::delete')
+      provider.run_action(:delete)
     end
   end
 end

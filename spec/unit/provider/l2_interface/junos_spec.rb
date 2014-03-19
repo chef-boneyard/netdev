@@ -16,36 +16,47 @@
 
 require 'spec_helper'
 
-describe 'netdev_vlan_junos provider' do
+describe Chef::Provider::NetdevL2Interface::Junos do
   include_context 'provider_junos'
 
-  let(:resource_subject) { 'netdev_vlan' }
-
   let(:managed_resource) do
-    vlan = double('vlan', :exists? => true)
-    allow(vlan).to receive(:[]).with(:vlan_id) { 2 }
-    allow(vlan).to receive(:[]).with(:description) { 'blahblahblah' }
-    allow(vlan).to receive(:[]).with(:_active) { true }
-    vlan
+    port = double('port', :exists? => true)
+    allow(port).to receive(:[]).with(:description) { 'blahblahblah' }
+    allow(port).to receive(:[]).with(:untagged_vlan) { 'default' }
+    allow(port).to receive(:[]).with(:tagged_vlans) { %w( chef-test ) }
+    allow(port).to receive(:[]).with(:vlan_tagging) { true }
+    allow(port).to receive(:[]).with(:_active) { true }
+    port
+  end
+
+  let(:new_resource) do
+    new_resource = Chef::Resource::NetdevL2Interface.new('ge-0/0/0')
+    new_resource.tagged_vlans(%w( chef-test ))
+    new_resource.vlan_tagging(true)
+    new_resource
+  end
+
+  let(:provider) do
+    described_class.new(new_resource, run_context)
   end
 
   describe '#action_create' do
-    it 'creates the vlan if properties have changed' do
+    it 'creates the layer 2 interface if properties have changed' do
       junos_client.should_receive(:updated_changed_properties).and_return(:description => 'poopy')
       junos_client.should_receive(:write!).with(no_args)
-      chef_run.converge('vlan::create')
+      provider.run_action(:create)
     end
 
     it 'does nothing if properties are unchanged' do
       junos_client.should_receive(:updated_changed_properties).and_return({})
-      chef_run.converge('vlan::create')
+      provider.run_action(:create)
     end
   end
 
   describe '#action_delete' do
-    it 'deletes the vlan' do
+    it 'deletes the layer 2 interface' do
       junos_client.should_receive(:delete!).with(no_args)
-      chef_run.converge('vlan::delete')
+      provider.run_action(:delete)
     end
   end
 end

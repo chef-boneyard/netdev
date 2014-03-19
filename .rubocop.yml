@@ -1,10 +1,10 @@
-AllCops:
-  Excludes:
-    - vendor/**
-
 AlignParameters:
   Enabled: false
+ClassAndModuleChildren:
+  Enabled: false
 ClassLength:
+  Enabled: false
+Documentation:
   Enabled: false
 Encoding:
   Enabled: false

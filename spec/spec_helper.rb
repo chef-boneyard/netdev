@@ -15,17 +15,11 @@
 #
 
 require 'chefspec'
-require 'chefspec/berkshelf'
 
 # load all shared examples and shared contexts
 Dir[File.expand_path('../support/**/*.rb', __FILE__)].each do |file|
   require(file)
 end
-
-# Stop 'already initialized constant' warnings. These
-# warnings appear because we load the library files
-# twice: once in this file and once by the Chef run.
-$VERBOSE = nil
 
 # load all library files for easy mocking
 libs = File.expand_path('../../libraries', __FILE__)
@@ -35,13 +29,8 @@ Dir[File.join(libs, '*.rb')].each do |lib|
 end
 
 RSpec.configure do |config|
-  # ChefSpec config
-
   # Specify the Chef log_level (default: :warn)
   config.log_level = :error
-
-  # Specify the path to a local JSON file with Ohai data (default: nil)
-  config.path = 'test/fixtures/platforms/junos/13.2X50-D10.2.json'
 
   # Use color in STDOUT
   config.color_enabled = true
