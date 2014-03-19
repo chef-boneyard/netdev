@@ -14,9 +14,12 @@
 # limitations under the License.
 #
 
+require 'forwardable'
+require 'singleton'
+
+require_relative '_junos_api_client'
+
 begin
-  require 'forwardable'
-  require 'singleton'
   require 'net/netconf/jnpr/ioproc'
   require 'junos-ez/stdlib'
 rescue LoadError

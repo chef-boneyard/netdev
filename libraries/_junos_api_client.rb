@@ -16,7 +16,7 @@
 
 begin
   require 'junos-ez/stdlib'
-  require ' net/netconf/exception'
+  require 'net/netconf/exception'
 rescue LoadError
   msg  = 'Could not load the junos-ez-stdlib gem...'
   msg << 'ensure you are using the Chef for Junos packages'

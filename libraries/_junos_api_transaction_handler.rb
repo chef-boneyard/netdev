@@ -14,8 +14,11 @@
 # limitations under the License.
 #
 
+require 'chef/handler'
+
+require_relative '_junos_api_transport'
+
 begin
-  require 'chef/handler'
   require ' net/netconf/exception'
 rescue LoadError
   msg  = 'Could not load the junos-ez-stdlib gem...'
