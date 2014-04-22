@@ -74,7 +74,7 @@ Requirements:
 * Juniper switch/router running `JUNOS 13.2*` (other Junos versions
 may work).
 * Switch is [configured for external remote access via SSH](http://www.juniper.net/techpubs/en_US/junos/topics/task/configuration/ssh-services-configuring.html).
-* A valid user account on the test switch [configured for paswordless key-based SSH access](http://pileofbits.com/2013/03/11/junos-ssh-key-authentication/).
+* A valid user account on the test switch [configured for passwordless key-based SSH access](http://pileofbits.com/2013/03/11/junos-ssh-key-authentication/).
 
 Test run resets on Juniper device is achieved using Juno's [rescue configuration](http://www.juniper.net/techpubs/en_US/junos11.4/topics/task/configuration/junos-software-rescue-configuration-creating-restoring.html) feature. A _rescue configuration_ allows you to define a known working configuration or a configuration with a known state that you can roll back to at any time.
 
