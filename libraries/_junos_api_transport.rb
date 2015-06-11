@@ -90,7 +90,7 @@ module Netdev
 
       def open_connection!
         # Create a connection to the NETCONF service
-        @transport = Netconf::IOProc.new
+        @transport = Netconf::IOProc.new(Hash[:timeout => 600])
         @transport.open
 
         # enable basic Junos EZ Stdlib providers
