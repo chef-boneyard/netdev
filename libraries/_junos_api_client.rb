@@ -37,7 +37,8 @@ module Netdev
           :l2_ports => ::Junos::Ez::L2ports,
           :ip_ports => ::Junos::Ez::IPports,
           :vlans => ::Junos::Ez::Vlans,
-          :lag_ports => ::Junos::Ez::LAGports
+          :lag_ports => ::Junos::Ez::LAGports,
+          :group => ::Junos::Ez::Group
         }
 
         KNOWN_RESOURCES.each_pair do |resource, provider_module|

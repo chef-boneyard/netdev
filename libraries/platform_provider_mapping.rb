@@ -24,6 +24,7 @@ require_relative 'provider_lag_eos'
 require_relative 'provider_lag_junos'
 require_relative 'provider_vlan_eos'
 require_relative 'provider_vlan_junos'
+require_relative 'provider_group_junos'
 
 #########################################################################
 # Chef::Resource::NetdevInterface Providers
@@ -83,4 +84,13 @@ Chef::Platform.set(
   platform: :junos,
   resource: :netdev_vlan,
   provider: Chef::Provider::NetdevVirtualLAN::Junos
+)
+
+#########################################################################
+# Chef::Resource::NetdevGroup Providers
+#########################################################################
+Chef::Platform.set(
+  platform: :junos,
+  resource: :netdev_group,
+  provider: Chef::Provider::NetdevGroup::Junos
 )
