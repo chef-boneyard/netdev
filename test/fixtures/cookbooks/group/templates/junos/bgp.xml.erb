@@ -1,0 +1,18 @@
+<% @bgp.each do | name, hash | %>
+            <protocols>
+                <bgp>
+                    <group>
+                        <name><%=name%></name>
+                        <type><%= hash['type']%></type>
+                        <local-address><%= hash['local-address']%></local-address>
+                        <% hash['neighbor'].each do | neighbor | %>
+                        <neighbor>
+                            <name><%=neighbor%></name>
+                        </neighbor>
+                         <% end %>
+                        <peer-as><%= hash['peer-as']%></peer-as>
+                    </group>
+                </bgp>
+            </protocols>
+<% end %>
+
