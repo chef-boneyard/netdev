@@ -88,7 +88,7 @@ class JunosCommitTransactionHandler < Chef::Handler
         subscribers = run_context.events.instance_variable_get('@subscribers')
         if subscribers
           resource_reporter = subscribers.find do |handler|
-            handler.kind_of?(Chef::ResourceReporter)
+            handler.is_a?(Chef::ResourceReporter)
           end
         end
       end
@@ -97,8 +97,8 @@ class JunosCommitTransactionHandler < Chef::Handler
   end
 end
 
-Chef::Config[:report_handlers].reject! { |i| i.kind_of?(JunosCommitTransactionHandler) }
+Chef::Config[:report_handlers].reject! { |i| i.is_a?(JunosCommitTransactionHandler) }
 Chef::Config[:report_handlers] << JunosCommitTransactionHandler.new
 
-Chef::Config[:exception_handlers].reject! { |i| i.kind_of?(JunosCommitTransactionHandler) }
+Chef::Config[:exception_handlers].reject! { |i| i.is_a?(JunosCommitTransactionHandler) }
 Chef::Config[:exception_handlers] << JunosCommitTransactionHandler.new

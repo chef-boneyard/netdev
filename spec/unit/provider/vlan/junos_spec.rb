@@ -20,7 +20,7 @@ describe Chef::Provider::NetdevVirtualLAN::Junos do
   include_context 'provider_junos'
 
   let(:managed_resource) do
-    vlan = double('vlan', :exists? => true)
+    vlan = double('vlan', exists?: true)
     allow(vlan).to receive(:[]).with(:vlan_id) { 2 }
     allow(vlan).to receive(:[]).with(:description) { 'blahblahblah' }
     allow(vlan).to receive(:[]).with(:_active) { true }
@@ -36,7 +36,7 @@ describe Chef::Provider::NetdevVirtualLAN::Junos do
 
   describe '#action_create' do
     it 'creates the vlan if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).and_return(:description => 'poopy')
+      junos_client.should_receive(:updated_changed_properties).and_return(description: 'poopy')
       junos_client.should_receive(:write!).with(no_args)
       provider.run_action(:create)
     end

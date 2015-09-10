@@ -20,7 +20,7 @@ describe Chef::Provider::NetdevL2Interface::Junos do
   include_context 'provider_junos'
 
   let(:managed_resource) do
-    port = double('port', :exists? => true)
+    port = double('port', exists?: true)
     allow(port).to receive(:[]).with(:description) { 'blahblahblah' }
     allow(port).to receive(:[]).with(:untagged_vlan) { 'default' }
     allow(port).to receive(:[]).with(:tagged_vlans) { %w( chef-test ) }
@@ -42,7 +42,7 @@ describe Chef::Provider::NetdevL2Interface::Junos do
 
   describe '#action_create' do
     it 'creates the layer 2 interface if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).and_return(:description => 'poopy')
+      junos_client.should_receive(:updated_changed_properties).and_return(description: 'poopy')
       junos_client.should_receive(:write!).with(no_args)
       provider.run_action(:create)
     end

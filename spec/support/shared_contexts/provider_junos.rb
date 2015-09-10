@@ -15,9 +15,8 @@
 #
 
 shared_context 'provider_junos' do
-
   let(:junos_client) do
-    double('junos_client', :managed_resource => managed_resource)
+    double('junos_client', managed_resource: managed_resource)
   end
 
   let(:run_context) do

@@ -33,15 +33,14 @@ module Netdev
         # is able to manage. This Hash is used for
         # validation and metaprogramming.
         KNOWN_RESOURCES = {
-          :l1_ports => ::Junos::Ez::L1ports,
-          :l2_ports => ::Junos::Ez::L2ports,
-          :ip_ports => ::Junos::Ez::IPports,
-          :vlans => ::Junos::Ez::Vlans,
-          :lag_ports => ::Junos::Ez::LAGports
+          l1_ports: ::Junos::Ez::L1ports,
+          l2_ports: ::Junos::Ez::L2ports,
+          ip_ports: ::Junos::Ez::IPports,
+          vlans: ::Junos::Ez::Vlans,
+          lag_ports: ::Junos::Ez::LAGports
         }
 
         KNOWN_RESOURCES.each_pair do |resource, provider_module|
-
           # Create a child class for each logical resource type. This forces
           # us to be explicit on which type of resource to manage.
           c = Class.new(self)
@@ -69,8 +68,8 @@ module Netdev
 
       def initialize(resource_type, resource_name)
         unless KNOWN_RESOURCES.keys.include?(resource_type)
-          error_message  = "Invalid resource type :#{resource_type}."
-          error_message << " Try one of: :#{KNOWN_RESOURCES.keys.join(", :")}"
+          error_message = "Invalid resource type :#{resource_type}."
+          error_message << " Try one of: :#{KNOWN_RESOURCES.keys.join(', :')}"
           fail error_message
         end
 
@@ -132,8 +131,8 @@ module Netdev
                                                   new_value
                                                 end
             else
-              error_message  = "#{self} don't know how to manage property :#{property_name}."
-              error_message << " Known properties include: :#{managed_resource.properties.join(", :")}"
+              error_message = "#{self} don't know how to manage property :#{property_name}."
+              error_message << " Known properties include: :#{managed_resource.properties.join(', :')}"
               fail ArgumentError, error_message
             end
           end
@@ -168,7 +167,7 @@ module Netdev
       # Validates the Junos candidate configuration after yielding to
       # the code passed to this method. If validation fails an exception
       # is raised so the Chef run is halted.
-      def with_config_check(&block)
+      def with_config_check(&_block)
         # ensure a transaction has been opened
         transport.start_transaction! unless transport.transaction_open?
 
@@ -200,8 +199,8 @@ module Netdev
         # `net-netconf` gem.
         begin
           require 'nokogiri'
-          request = Nokogiri::XML(request.to_xml) { |doc| doc.noblanks }
-          response = Nokogiri::XML(response.to_xml) { |doc| doc.noblanks }
+          request = Nokogiri::XML(request.to_xml, &:noblanks)
+          response = Nokogiri::XML(response.to_xml, &:noblanks)
         rescue LoadError
           Chef::Log.debug 'Could not load nokogiri gem, xml will not be formatted'
           # fall back to ugly xml

@@ -20,7 +20,7 @@ describe Chef::Provider::NetdevInterface::Junos do
   include_context 'provider_junos'
 
   let(:managed_resource) do
-    port = double('port', :exists? => true)
+    port = double('port', exists?: true)
     allow(port).to receive(:[]).with(:admin) { :up }
     allow(port).to receive(:[]).with(:description) { 'blahblahblah' }
     allow(port).to receive(:[]).with(:mtu) { 3 }
@@ -43,7 +43,6 @@ describe Chef::Provider::NetdevInterface::Junos do
   end
 
   describe '#load_current_resource' do
-
     describe 'wires managed_resource names to attribute names' do
       it 'translates :up to true' do
         pending
@@ -61,7 +60,7 @@ describe Chef::Provider::NetdevInterface::Junos do
 
   describe '#action_create' do
     it 'creates the interface if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).once.and_return(:description => 'poopy')
+      junos_client.should_receive(:updated_changed_properties).once.and_return(description: 'poopy')
       junos_client.should_receive(:write!).once.with(no_args)
       provider.run_action(:create)
     end

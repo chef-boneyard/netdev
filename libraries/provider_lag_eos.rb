@@ -56,13 +56,13 @@ class Chef
       if opts.any?
         if current_resource.exists?
           converge_by("edit lag #{new_resource.name} will be modified") do
-            command  = "netdev lag edit #{new_resource.lag_name} "
+            command = "netdev lag edit #{new_resource.lag_name} "
             command << opts.join(' ')
             execute_command(command)
           end
         else
           converge_by("create lag #{new_resource.name}") do
-            command  = "netdev lag create #{new_resource.lag_name} "
+            command = "netdev lag create #{new_resource.lag_name} "
             command << opts.join(' ')
             execute_command(command)
           end
