@@ -1,20 +1,12 @@
+sudo: false
+cache: bundler
+language: ruby
+bundler_args: --without kitchen_common kitchen_vagrant kitchen_cloud
 rvm:
-  - 1.9.3
-  - 2.0.0
+  - 2.0
   - 2.1
-
-bundler_args: --jobs 7
-
-branches:
-  only:
-    - master
-
-script: bundle exec rake travis:ci
-
-notifications:
-  hipchat:
-    rooms:
-      # Build Statuses
-      - secure: "ROILaQYmYEfebbZUxb3MCDGUZiiZC7WVVjC6XRfVFHf+oefYITab4GedkfJVsWqjqm6OqvTzi0oaxiwujRd9olRBTIDPJ/EUMMVPtuzukt7Z3tYhyHTCyzdga+fkUMEX9NytzQkXtXWY+HFVpBSZGZAu9ut1LYkmiAcdecScTEg="
-      # Release Engineering
-      - secure: "GUVJyx/JTS/3E/tlb/Zq1nlwA91DYe0K6yQbOUvYrjJY2p1bDAk4+I8pCt1Jgs5ga1xdN41cbA35BclVnvtFgO7yfkoTNBUs7i5A3K0x1tWq0fI5hwas0mjwOJ3pIuTBPjSEa4OKqyouJwrA2OPYZV/DcblKlQBHLA0FfX8L9z0="
+  - 2.2
+script:
+  - bundle exec foodcritic -f any . --tags ~FC005 --tags ~FC015
+  - bundle exec rubocop
+  - bundle exec rspec --color --format progress
