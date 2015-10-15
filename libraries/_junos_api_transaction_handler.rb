@@ -31,7 +31,7 @@ end
 class JunosCommitTransactionHandler < Chef::Handler
   def report
     # Ensure handler is no-op in why-run mode and non-Junos platforms.
-    if (node['platform'] == 'junos') && !Chef::Config[:why_run]
+    if (node['platform'] == 'junos' || (node['platform_version'].include? "JNPR")) && !Chef::Config[:why_run]
       begin
         # on successful Chef-runs commit the transaction
         if success?
