@@ -42,7 +42,7 @@ Chef::Platform.set(
 )
 
 Chef::Platform.set(
-  platform: :freebsd,
+  version:  "JNPR",
   resource: :netdev_interface,
   provider: Chef::Provider::NetdevInterface::Junos
 )
@@ -63,6 +63,7 @@ Chef::Platform.set(
 )
 
 Chef::Platform.set(
+  version: "JNPR",
   platform: :freebsd,
   resource: :netdev_l2_interface,
   provider: Chef::Provider::NetdevL2Interface::Junos
@@ -84,7 +85,7 @@ Chef::Platform.set(
 )
 
 Chef::Platform.set(
-  platform: :freebsd,
+  version: "JNPR",
   resource: :netdev_lag,
   provider: Chef::Provider::NetdevLinkAggregationGroup::Junos
 )
@@ -105,7 +106,7 @@ Chef::Platform.set(
 )
 
 Chef::Platform.set(
-  platform: :freebsd,
+  version: "JNPR",
   resource: :netdev_vlan,
   provider: Chef::Provider::NetdevVirtualLAN::Junos
 )
@@ -120,7 +121,7 @@ Chef::Platform.set(
 )
 
 Chef::Platform.set(
-  platform: :freebsd,
+  version: "JNPR",
   resource: :netdev_group,
   provider: Chef::Provider::NetdevGroup::Junos
 )
