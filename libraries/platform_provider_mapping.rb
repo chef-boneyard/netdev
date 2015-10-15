@@ -41,6 +41,12 @@ Chef::Platform.set(
   provider: Chef::Provider::NetdevInterface::Junos
 )
 
+Chef::Platform.set(
+  version:  "JNPR",
+  resource: :netdev_interface,
+  provider: Chef::Provider::NetdevInterface::Junos
+)
+
 #########################################################################
 # Chef::Resource::NetdevL2Interface Providers
 #########################################################################
@@ -52,6 +58,12 @@ Chef::Platform.set(
 
 Chef::Platform.set(
   platform: :junos,
+  resource: :netdev_l2_interface,
+  provider: Chef::Provider::NetdevL2Interface::Junos
+)
+
+Chef::Platform.set(
+  version: "JNPR",
   resource: :netdev_l2_interface,
   provider: Chef::Provider::NetdevL2Interface::Junos
 )
@@ -71,6 +83,12 @@ Chef::Platform.set(
   provider: Chef::Provider::NetdevLinkAggregationGroup::Junos
 )
 
+Chef::Platform.set(
+  version: "JNPR",
+  resource: :netdev_lag,
+  provider: Chef::Provider::NetdevLinkAggregationGroup::Junos
+)
+
 #########################################################################
 # Chef::Resource::NetdevVirtualLAN Providers
 #########################################################################
@@ -86,11 +104,23 @@ Chef::Platform.set(
   provider: Chef::Provider::NetdevVirtualLAN::Junos
 )
 
+Chef::Platform.set(
+  version: "JNPR",
+  resource: :netdev_vlan,
+  provider: Chef::Provider::NetdevVirtualLAN::Junos
+)
+
 #########################################################################
 # Chef::Resource::NetdevGroup Providers
 #########################################################################
 Chef::Platform.set(
   platform: :junos,
+  resource: :netdev_group,
+  provider: Chef::Provider::NetdevGroup::Junos
+)
+
+Chef::Platform.set(
+  version: "JNPR",
   resource: :netdev_group,
   provider: Chef::Provider::NetdevGroup::Junos
 )
