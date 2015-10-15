@@ -64,7 +64,6 @@ Chef::Platform.set(
 
 Chef::Platform.set(
   version: "JNPR",
-  platform: :freebsd,
   resource: :netdev_l2_interface,
   provider: Chef::Provider::NetdevL2Interface::Junos
 )
