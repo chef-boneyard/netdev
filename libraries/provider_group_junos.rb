@@ -92,11 +92,6 @@ class Chef
     # Delete the given group.
     #
     def action_delete
-      unless @is_resource_updated
-        Chef::Log.info("Configuration is deleted. Nothing to commit.")
-        return
-      end
-
       if current_resource.exists?
         converge_by("delete JUNOS group #{new_resource.name}") do
           junos_client.delete!
