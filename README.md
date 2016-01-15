@@ -1,7 +1,7 @@
 netdev Cookbook
 ===============
 
-[![Build Status](https://travis-ci.org/chef-cookbooks/netdev.svg?branch=master)](http://travis-ci.org/chef-cookbooks/netdev)
+[![Build Status](https://travis-ci.org/chef-partners/netdev.svg?branch=master)](http://travis-ci.org/chef-partners/netdev)
 [![Cookbook Version](https://img.shields.io/cookbook/v/netdev.svg)](https://supermarket.chef.io/cookbooks/netdev)
 
 Provides a set of vendor-agnostic resources for managing networking devices.
