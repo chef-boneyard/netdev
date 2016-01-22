@@ -68,7 +68,13 @@ class Chef
       end
       @new_values[:path] = @file_path
       format = (@new_values[:template_path].split('/'))[-1].split('.') 
-      if format[1] != 'erb' 
+      if format[1] != 'erb'
+        unless ['xml', 'text', 'set'].include? format[1]
+          failure_msg = "Invalid format #{format[1]} in #{@new_values[:template_path]}. Valid format values: 'xml', 'text', 'set'.\n\n"
+          Chef::Log.fatal(failure_msg)
+          raise(failure_msg)
+        end
+
         @new_values[:format] = format[1]
       else
 	@new_values[:format] = 'xml'  
