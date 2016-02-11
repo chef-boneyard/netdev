@@ -172,6 +172,7 @@ module Netdev
       def with_config_check(&block)
         # ensure a transaction has been opened
         transport.start_transaction! unless transport.transaction_open?
+        Netconf::raise_on_warning = true
 
         yield
 
@@ -180,8 +181,18 @@ module Netdev
           Chef::Log.debug("#{self} validated Junos candidate configuration")
         end
       rescue Netconf::RpcError => e
-        Chef::Log.error(format_rpc_error(e))
-        raise e
+        if rpc_errs = e.rsp.xpath('//rpc-error')
+          all_count = rpc_errs.count
+          warn_count = rpc_errs.xpath('error-severity').select{|err| err.text == 'warning'}.count
+          if all_count - warn_count > 0
+            Chef::Log.error("#{self} error communicating with the Junos XML API...rolling back!")
+            Chef::Log.error(format_rpc_error(e))
+            raise e
+          elsif warn_count
+            Chef::Log.info(format_rpc_error(e))
+          end
+        end
+
       end
 
       # Takes a `Netconf::RpcError` and extracts the request and response
@@ -209,7 +220,6 @@ module Netdev
         end
 
         error_msg = <<-MSG
-  #{self} error communicating with the Junos XML API...rolling back!
 
   JUNOS XML REQUEST:
 
