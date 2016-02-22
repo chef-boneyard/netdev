@@ -53,9 +53,18 @@ class JunosCommitTransactionHandler < Chef::Handler
           Chef::Log.info('Rolled back pending Junos candidate configuration changes')
         end
       rescue Netconf::RpcError => e
-        failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
-        Chef::Log.fatal(failure_msg)
-        raise(failure_msg)
+        # Handle warning message seperately
+        if rpc_errs = e.rsp.xpath('//rpc-error')
+          all_count = rpc_errs.count
+          warn_count = rpc_errs.xpath('error-severity').select{|err| err.text == 'warning'}.count
+          if all_count - warn_count > 0
+            failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
+            Chef::Log.fatal(failure_msg)
+            raise(failure_msg)
+          elsif warn_count
+            Chef::Log.info(e.rsp.to_xml)
+          end
+        end      
       end
     end
   end
