@@ -39,7 +39,13 @@ class Chef
       @current_resource = Chef::Resource::NetdevGroup.new(new_resource.name)
       @current_resource.group_name(new_resource.group_name)
 
-      if (group = junos_client.managed_resource) && group.exists?
+      # Check if apply-group is configured
+      apply_grp_config = Netdev::Junos::ApiTransport.instance.get_configuration{ |a_grp|
+        a_grp.send('apply-groups')
+      }
+      apply_grp = apply_grp_config.xpath("//apply-groups=\'#{new_resource.group_name}\'")
+
+      if (group = junos_client.managed_resource) && group.exists? && apply_grp
         @current_resource.exists = true
       else
         @current_resource.exists = false

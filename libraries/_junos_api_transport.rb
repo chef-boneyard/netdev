@@ -53,6 +53,7 @@ module Netdev
       def_delegator :@transport_config, :commit?
       def_delegator :@transport_config, :commit!
       def_delegator :@transport_config, :rollback!
+      def_delegator :@transport_rpc, :get_configuration
 
       # Creates a fully-initialized Netconf transport instance for
       # communicating with the Junos XML API. Currently we only support
@@ -101,6 +102,7 @@ module Netdev
         ::Junos::Ez::Provider(@transport)
         ::Junos::Ez::Config::Utils(@transport, :config)
         @transport_config = @transport.config
+        @transport_rpc = @transport.rpc
 
         ApiClient::KNOWN_RESOURCES.each_pair do |resource, provider_module|
           provider_module.send(:Provider, @transport, resource)
