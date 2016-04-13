@@ -18,7 +18,7 @@ begin
   require 'junos-ez/stdlib'
   require 'net/netconf/exception'
 rescue LoadError
-  msg  = 'Could not load the junos-ez-stdlib gem...'
+  msg = 'Could not load the junos-ez-stdlib gem...'
   msg << 'ensure you are using the Chef for Junos packages'
   Chef::Log.debug msg
 end
@@ -37,7 +37,8 @@ module Netdev
           l2_ports: ::Junos::Ez::L2ports,
           ip_ports: ::Junos::Ez::IPports,
           vlans: ::Junos::Ez::Vlans,
-          lag_ports: ::Junos::Ez::LAGports
+          lag_ports: ::Junos::Ez::LAGports,
+          group: ::Junos::Ez::Group
         }
 
         KNOWN_RESOURCES.each_pair do |resource, provider_module|
@@ -170,6 +171,7 @@ module Netdev
       def with_config_check(&_block)
         # ensure a transaction has been opened
         transport.start_transaction! unless transport.transaction_open?
+        Netconf::raise_on_warning = true
 
         yield
 
@@ -178,8 +180,18 @@ module Netdev
           Chef::Log.debug("#{self} validated Junos candidate configuration")
         end
       rescue Netconf::RpcError => e
-        Chef::Log.error(format_rpc_error(e))
-        raise e
+        rpc_errs = e.rsp.xpath('//rpc-error')
+        if rpc_errs
+          all_count = rpc_errs.count
+          warn_count = rpc_errs.xpath('error-severity').select{ |err| err.text == 'warning' }.count
+          if all_count - warn_count > 0
+            Chef::Log.error("#{self} error communicating with the Junos XML API...rolling back!")
+            Chef::Log.error(format_rpc_error(e))
+            raise e
+          elsif warn_count
+            Chef::Log.info(format_rpc_error(e))
+          end
+        end
       end
 
       # Takes a `Netconf::RpcError` and extracts the request and response
@@ -207,7 +219,6 @@ module Netdev
         end
 
         error_msg = <<-MSG
-  #{self} error communicating with the Junos XML API...rolling back!
 
   JUNOS XML REQUEST:
 
