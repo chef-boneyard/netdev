@@ -3,7 +3,7 @@ require 'bundler/setup'
 namespace :style do
   require 'rubocop/rake_task'
   desc 'Run Ruby style checks'
-  RuboCop::RakeTask.new(:ruby)
+  Rubocop::RakeTask.new(:ruby)
 end
 
 desc 'Run all style checks'
