@@ -21,7 +21,7 @@ require_relative '_junos_api_transport'
 begin
   require ' net/netconf/exception'
 rescue LoadError
-  msg  = 'Could not load the junos-ez-stdlib gem...'
+  msg = 'Could not load the junos-ez-stdlib gem...'
   msg << 'ensure you are using the Chef for Junos packages'
   Chef::Log.debug msg
 end
@@ -31,7 +31,7 @@ end
 class JunosCommitTransactionHandler < Chef::Handler
   def report
     # Ensure handler is no-op in why-run mode and non-Junos platforms.
-    if (node['platform'] == 'junos' || (node['platform_version'].include? "JNPR")) && !Chef::Config[:why_run]
+    if (node['platform'] == 'junos' || (node['platform_version'].include? 'JNPR')) && !Chef::Config[:why_run]
       begin
         # on successful Chef-runs commit the transaction
         if success?
@@ -56,7 +56,7 @@ class JunosCommitTransactionHandler < Chef::Handler
         # Handle warning message seperately
         if rpc_errs = e.rsp.xpath('//rpc-error')
           all_count = rpc_errs.count
-          warn_count = rpc_errs.xpath('error-severity').select{|err| err.text == 'warning'}.count
+          warn_count = rpc_errs.xpath('error-severity').select{ |err| err.text == 'warning' }.count
           if all_count - warn_count > 0
             failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
             Chef::Log.fatal(failure_msg)
@@ -64,7 +64,7 @@ class JunosCommitTransactionHandler < Chef::Handler
           elsif warn_count
             Chef::Log.info(e.rsp.to_xml)
           end
-        end      
+        end
       end
     end
   end
@@ -97,7 +97,7 @@ class JunosCommitTransactionHandler < Chef::Handler
         subscribers = run_context.events.instance_variable_get('@subscribers')
         if subscribers
           resource_reporter = subscribers.find do |handler|
-            handler.kind_of?(Chef::ResourceReporter)
+            handler.is_a?(Chef::ResourceReporter)
           end
         end
       end
@@ -106,8 +106,8 @@ class JunosCommitTransactionHandler < Chef::Handler
   end
 end
 
-Chef::Config[:report_handlers].reject! { |i| i.kind_of?(JunosCommitTransactionHandler) }
+Chef::Config[:report_handlers].reject! { |i| i.is_a?(JunosCommitTransactionHandler) }
 Chef::Config[:report_handlers] << JunosCommitTransactionHandler.new
 
-Chef::Config[:exception_handlers].reject! { |i| i.kind_of?(JunosCommitTransactionHandler) }
+Chef::Config[:exception_handlers].reject! { |i| i.is_a?(JunosCommitTransactionHandler) }
 Chef::Config[:exception_handlers] << JunosCommitTransactionHandler.new

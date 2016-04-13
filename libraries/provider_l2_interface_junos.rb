@@ -65,7 +65,7 @@ class Chef
       updated_values = junos_client.updated_changed_properties(new_resource.state,
                                                                current_resource.state)
       unless updated_values.empty?
-        message  = "create layer 2 interface #{new_resource.name} with values:"
+        message = "create layer 2 interface #{new_resource.name} with values:"
         message << " #{pretty_print_updated_values(updated_values)}"
         converge_by(message) do
           junos_client.write!

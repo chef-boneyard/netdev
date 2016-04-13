@@ -57,13 +57,13 @@ class Chef
       if opts.any?
         if current_resource.exists?
           converge_by("edit l2interface #{new_resource.name} will be modified") do
-            command  = "netdev l2interface edit #{new_resource.l2_interface_name} "
+            command = "netdev l2interface edit #{new_resource.l2_interface_name} "
             command << opts.join(' ')
             execute_command(command)
           end
         else
           converge_by("L2interface #{new_resource.name} will be created") do
-            command  = "netdev l2interface create #{new_resource.l2_interface_name} "
+            command = "netdev l2interface create #{new_resource.l2_interface_name} "
             command << opts.join(' ')
             execute_command(command)
           end

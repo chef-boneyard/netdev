@@ -65,7 +65,7 @@ class Chef
               v
             end
           end
-          command  = "netdev interface edit #{new_resource.interface_name}"
+          command = "netdev interface edit #{new_resource.interface_name}"
           command << opts.join(' ')
           execute_command(command)
         end

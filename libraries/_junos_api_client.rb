@@ -18,7 +18,7 @@ begin
   require 'junos-ez/stdlib'
   require 'net/netconf/exception'
 rescue LoadError
-  msg  = 'Could not load the junos-ez-stdlib gem...'
+  msg = 'Could not load the junos-ez-stdlib gem...'
   msg << 'ensure you are using the Chef for Junos packages'
   Chef::Log.debug msg
 end
@@ -33,16 +33,15 @@ module Netdev
         # is able to manage. This Hash is used for
         # validation and metaprogramming.
         KNOWN_RESOURCES = {
-          :l1_ports => ::Junos::Ez::L1ports,
-          :l2_ports => ::Junos::Ez::L2ports,
-          :ip_ports => ::Junos::Ez::IPports,
-          :vlans => ::Junos::Ez::Vlans,
-          :lag_ports => ::Junos::Ez::LAGports,
-          :group => ::Junos::Ez::Group
+          l1_ports: ::Junos::Ez::L1ports,
+          l2_ports: ::Junos::Ez::L2ports,
+          ip_ports: ::Junos::Ez::IPports,
+          vlans: ::Junos::Ez::Vlans,
+          lag_ports: ::Junos::Ez::LAGports,
+          group: ::Junos::Ez::Group
         }
 
         KNOWN_RESOURCES.each_pair do |resource, provider_module|
-
           # Create a child class for each logical resource type. This forces
           # us to be explicit on which type of resource to manage.
           c = Class.new(self)
@@ -70,8 +69,8 @@ module Netdev
 
       def initialize(resource_type, resource_name)
         unless KNOWN_RESOURCES.keys.include?(resource_type)
-          error_message  = "Invalid resource type :#{resource_type}."
-          error_message << " Try one of: :#{KNOWN_RESOURCES.keys.join(", :")}"
+          error_message = "Invalid resource type :#{resource_type}."
+          error_message << " Try one of: :#{KNOWN_RESOURCES.keys.join(', :')}"
           fail error_message
         end
 
@@ -133,8 +132,8 @@ module Netdev
                                                   new_value
                                                 end
             else
-              error_message  = "#{self} don't know how to manage property :#{property_name}."
-              error_message << " Known properties include: :#{managed_resource.properties.join(", :")}"
+              error_message = "#{self} don't know how to manage property :#{property_name}."
+              error_message << " Known properties include: :#{managed_resource.properties.join(', :')}"
               fail ArgumentError, error_message
             end
           end
@@ -169,7 +168,7 @@ module Netdev
       # Validates the Junos candidate configuration after yielding to
       # the code passed to this method. If validation fails an exception
       # is raised so the Chef run is halted.
-      def with_config_check(&block)
+      def with_config_check(&_block)
         # ensure a transaction has been opened
         transport.start_transaction! unless transport.transaction_open?
         Netconf::raise_on_warning = true
@@ -183,7 +182,7 @@ module Netdev
       rescue Netconf::RpcError => e
         if rpc_errs = e.rsp.xpath('//rpc-error')
           all_count = rpc_errs.count
-          warn_count = rpc_errs.xpath('error-severity').select{|err| err.text == 'warning'}.count
+          warn_count = rpc_errs.xpath('error-severity').select{ |err| err.text == 'warning' }.count
           if all_count - warn_count > 0
             Chef::Log.error("#{self} error communicating with the Junos XML API...rolling back!")
             Chef::Log.error(format_rpc_error(e))
@@ -192,7 +191,6 @@ module Netdev
             Chef::Log.info(format_rpc_error(e))
           end
         end
-
       end
 
       # Takes a `Netconf::RpcError` and extracts the request and response
@@ -212,8 +210,8 @@ module Netdev
         # `net-netconf` gem.
         begin
           require 'nokogiri'
-          request = Nokogiri::XML(request.to_xml) { |doc| doc.noblanks }
-          response = Nokogiri::XML(response.to_xml) { |doc| doc.noblanks }
+          request = Nokogiri::XML(request.to_xml, &:noblanks)
+          response = Nokogiri::XML(response.to_xml, &:noblanks)
         rescue LoadError
           Chef::Log.debug 'Could not load nokogiri gem, xml will not be formatted'
           # fall back to ugly xml

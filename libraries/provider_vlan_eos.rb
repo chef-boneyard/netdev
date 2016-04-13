@@ -53,13 +53,13 @@ class Chef
       if updated?(current_resource.vlan_name, new_resource.vlan_name)
         if current_resource.exists?
           converge_by("edit vlan #{new_resource.name} will be modified") do
-            command  = "netdev vlan edit #{new_resource.vlan_id}"
+            command = "netdev vlan edit #{new_resource.vlan_id}"
             command << " --name #{new_resource.vlan_name}"
             execute_command(command)
           end
         else
           converge_by("Vlan #{new_resource.name} will be created") do
-            command  = "netdev vlan create #{new_resource.vlan_id}"
+            command = "netdev vlan create #{new_resource.vlan_id}"
             command << " --name #{new_resource.vlan_name}"
             execute_command(command)
           end

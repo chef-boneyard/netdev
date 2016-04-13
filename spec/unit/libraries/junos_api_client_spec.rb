@@ -31,19 +31,19 @@ describe Netdev::Junos::ApiClient do
     let(:resource_name) { 'ge-0/0/0' }
     let(:transport) do
       double('transport',
-             :transaction_open? => true,
-             :start_transaction! => true,
-             :l1_ports => { resource_name => managed_resource },
-             :commit? => true)
+             transaction_open?: true,
+             start_transaction!: true,
+             l1_ports: { resource_name => managed_resource },
+             commit?: true)
     end
     let(:managed_resource) do
       double('managed_resource',
-             :write! => true,
-             :delete! => true,
-             :activate! => true,
-             :deactivate! => true,
-             :should => {},
-             :properties => Junos::Ez::L1ports::PROPERTIES)
+             write!: true,
+             delete!: true,
+             activate!: true,
+             deactivate!: true,
+             should: {},
+             properties: Junos::Ez::L1ports::PROPERTIES)
     end
 
     subject do
@@ -74,8 +74,8 @@ describe Netdev::Junos::ApiClient do
     end
 
     describe '#updated_changed_properties' do
-      let(:existing_values) { { :admin => true, :description => 'WAT' } }
-      let(:new_values) { { :admin => false, :description => 'WAT' } }
+      let(:existing_values) { { admin: true, description: 'WAT' } }
+      let(:new_values) { { admin: false, description: 'WAT' } }
 
       it 'updates only the properties that have changed' do
         expect(managed_resource).to receive(:[]=).once.with(:admin, false)
@@ -84,7 +84,7 @@ describe Netdev::Junos::ApiClient do
 
       described_class.const_get('VALUES_TO_SYMBOLIZE').each do |val|
         context "when passed a property set to a String of: #{val}" do
-          let(:new_values) { { :duplex => val.to_s } }
+          let(:new_values) { { duplex: val.to_s } }
 
           it 'converts the value to a Symbol' do
             expect(managed_resource).to receive(:[]=).once.with(:duplex, val.to_sym)
@@ -94,7 +94,7 @@ describe Netdev::Junos::ApiClient do
       end
 
       context 'when passed an unknown property' do
-        let(:new_values) { { :foo => 'bar' } }
+        let(:new_values) { { foo: 'bar' } }
 
         it 'raises an exception' do
           expect do
@@ -104,13 +104,12 @@ describe Netdev::Junos::ApiClient do
       end
 
       context 'when passed a property set to nil' do
-        let(:new_values) { { :description => nil } }
+        let(:new_values) { { description: nil } }
 
         it 'treats the value as unchanged' do
           expect(managed_resource).to receive(:[]=).never
         end
       end
-
     end
   end
 end

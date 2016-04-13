@@ -35,7 +35,7 @@ class Chef
       true
     end
 
-    def load_current_resource 
+    def load_current_resource
       @current_resource = Chef::Resource::NetdevGroup.new(new_resource.name)
       @current_resource.group_name(new_resource.group_name)
 
@@ -50,17 +50,16 @@ class Chef
       else
         @current_resource.exists = false
       end
-      
       @file_path = "/var/tmp/#{new_resource.name}"
       @new_values = new_resource.state
       @current_values = current_resource.state
 
       @template_resource = Chef::Resource::Template.new(@file_path, run_context)
-      @template_resource.source (@new_values[:template_path]) 
-      @template_resource.cookbook (new_resource.cookbook_name)
-      @template_resource.variables (@new_values[:variables])
-      @template_resource.run_action( @action )
-      @is_resource_updated =  @template_resource.updated_by_last_action?
+      @template_resource.source(@new_values[:template_path])
+      @template_resource.cookbook(new_resource.cookbook_name)
+      @template_resource.variables(@new_values[:variables])
+      @template_resource.run_action(@action)
+      @is_resource_updated = @template_resource.updated_by_last_action?
       @current_resource
     end
 
@@ -68,14 +67,14 @@ class Chef
     # Create the given group.
     #
     def action_create
-      unless @is_resource_updated or not @current_resource.exists
-	Chef::Log.info("Configuration file is same. Nothing to commit.")
+      unless @is_resource_updated || !@current_resource.exists
+        Chef::Log.info('Configuration file is same. Nothing to commit.')
         return
       end
       @new_values[:path] = @file_path
-      format = (@new_values[:template_path].split('/'))[-1].split('.') 
+      format = @new_values[:template_path].split('/')[-1].split('.')
       if format[1] != 'erb'
-        unless ['xml', 'text', 'set'].include? format[1]
+        unless %w(xml text set).include? format[1]
           failure_msg = "Invalid format #{format[1]} in #{@new_values[:template_path]}. Valid format values: 'xml', 'text', 'set'.\n\n"
           Chef::Log.fatal(failure_msg)
           raise(failure_msg)
@@ -83,7 +82,7 @@ class Chef
 
         @new_values[:format] = format[1]
       else
-	@new_values[:format] = 'xml'  
+        @new_values[:format] = 'xml'
       end
 
       @new_values.delete(:template_path)
@@ -93,7 +92,7 @@ class Chef
       updated_values = junos_client.updated_changed_properties(@new_values,
                                                                @current_values)
       unless updated_values.empty?
-        message  = "create JUNOS group #{new_resource.name} and apply it."
+        message = "create JUNOS group #{new_resource.name} and apply it."
         converge_by(message) do
           junos_client.write!
         end

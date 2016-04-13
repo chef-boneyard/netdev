@@ -46,7 +46,7 @@ class Chef
       @vlan_tagging      = false
 
       # State attributes that are set by the provider
-      @exists    = false
+      @exists = false
     end
 
     #

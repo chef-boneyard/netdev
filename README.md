@@ -1,6 +1,8 @@
 netdev Cookbook
 ===============
-[![Build Status](https://secure.travis-ci.org/opscode-cookbooks/omnibus.png?branch=master)](http://travis-ci.org/opscode-cookbooks/netdev)
+
+[![Build Status](https://travis-ci.org/chef-partners/netdev.svg?branch=master)](http://travis-ci.org/chef-partners/netdev)
+[![Cookbook Version](https://img.shields.io/cookbook/v/netdev.svg)](https://supermarket.chef.io/cookbooks/netdev)
 
 Provides a set of vendor-agnostic resources for managing networking devices.
 
@@ -29,6 +31,7 @@ __netdev_interface__ | This resource provides an abstraction for managing physic
 __netdev\_l2\_interface__ | This resource provides an abstraction for creating and deleting layer 2 interfaces on network devices. | [netdev_l2_interface integation test fixture](test/fixtures/cookbooks/l2_interface/recipes/create.rb).
 __netdev\_lag__ | This resource provides an abstraction for creating and deleting link aggregation group interfaces. | [netdev_lag integation test fixture](test/fixtures/cookbooks/lag/recipes/create.rb).
 __netdev\_vlan__ | This resource provides an abstraction for creating and deleting VLANs. | [netdev_vlan integation test fixture](test/fixtures/cookbooks/vlan/recipes/create.rb).
+__netdev\_group__ | This resource provides an abstraction for creating and deleting JUNOS Groups. | [netdev_group integation test fixture](test/fixtures/cookbooks/group/recipes/service_create.rb).
 
 Testing
 -------

@@ -59,5 +59,4 @@ describe Netdev::Junos::ApiTransport do
       expect(subject.transaction_open?).to be_false
     end
   end
-
 end
