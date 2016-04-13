@@ -17,8 +17,9 @@ Improvements:
 v2.1.0 (2016-03-11)
 -------------------
 Features:
-- Add netdev_group provider for Juniper devices
-- Add support for Juniper devices running BSD10 based JUNOS images
+- Add netdev_group provider for Juniper devices.
+- Add support for Juniper devices running BSD10 based JUNOS images.
+- Add support for MX series Juniper device.
 
 Bug fix:
   - Issue 7 ArgumentError: wrong number of arguments(2 for 0) error is coming while running chef for 
