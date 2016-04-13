@@ -16,33 +16,26 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::NetdevL2Interface::Junos do
+describe Chef::Provider::NetdevGroup::Junos do
   include_context 'provider_junos'
 
   let(:managed_resource) do
-    port = double('port', exists?: true)
-    allow(port).to receive(:[]).with(:description) { 'blahblahblah' }
-    allow(port).to receive(:[]).with(:untagged_vlan) { 'default' }
-    allow(port).to receive(:[]).with(:tagged_vlans) { %w( chef-test ) }
-    allow(port).to receive(:[]).with(:vlan_tagging) { true }
-    allow(port).to receive(:[]).with(:_active) { true }
-    port
+    grp = double('service_group', exists?: true)
+    allow(grp).to receive(:[]).with(:template_path) { 'services.set.erb' }
+    allow(grp).to receive(:[]).with(:_active) { true }
+    grp
   end
 
   let(:new_resource) do
-    new_resource = Chef::Resource::NetdevL2Interface.new('ge-0/0/0')
-    new_resource.tagged_vlans(%w( chef-test ))
-    new_resource.vlan_tagging(true)
+    new_resource = Chef::Resource::NetdevGroup.new('service_group')
+    new_resource.template_path('services.set.erb')
+    new_resource.variables(services: node[:netdev][:services])
     new_resource
   end
 
-  let(:provider) do
-    described_class.new(new_resource, run_context)
-  end
-
   describe '#action_create' do
-    it 'creates the layer 2 interface if properties have changed' do
-      junos_client.should_receive(:updated_changed_properties).and_return(description: 'poopy')
+    it 'creates the group if properties have changed' do
+      junos_client.should_receive(:updated_changed_properties).and_return({})
       junos_client.should_receive(:write!).with(no_args)
       provider.run_action(:create)
     end
@@ -54,7 +47,7 @@ describe Chef::Provider::NetdevL2Interface::Junos do
   end
 
   describe '#action_delete' do
-    it 'deletes the layer 2 interface' do
+    it 'deletes the group' do
       junos_client.should_receive(:delete!).with(no_args)
       provider.run_action(:delete)
     end

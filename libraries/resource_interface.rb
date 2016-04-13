@@ -48,7 +48,7 @@ class Chef
       @duplex          = 'auto'
 
       # State attributes that are set by the provider
-      @exists    = false
+      @exists = false
     end
 
     #

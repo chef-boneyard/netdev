@@ -45,7 +45,7 @@ class Chef
       @description = "Chef created vlan: #{name}"
 
       # State attributes that are set by the provider
-      @exists    = false
+      @exists = false
     end
 
     #

@@ -25,7 +25,7 @@ class Chef
   class Resource::NetdevGroup < Resource
     provides      :netdev_group
     identity_attr :group_name
-    state_attrs   :template_path, :variables  
+    state_attrs   :template_path, :variables
 
     attr_accessor :exists
     alias_method  :exists?, :exists
@@ -41,9 +41,9 @@ class Chef
 
       # Set the name attribute and default attributes
       @group_name      = name
-      
-      @enable          = true       
-      #@variables       = Hash.new
+
+      @enable          = true
+
       # State attributes that are set by the provider
       @exists          = false
     end
@@ -64,11 +64,11 @@ class Chef
     # @param [HASH] arg
     # @return [HASH]
     #
-    def variables(args=nil)
+    def variables(args = nil)
       set_or_return(
         :variables,
         args,
-        :kind_of => [ Hash ]
+        kind_of: [Hash]
       )
     end
 
@@ -78,14 +78,13 @@ class Chef
     # @param [String] arg
     # @return [String]
     #
-    def template_path(arg=nil)
+    def template_path(arg = nil)
       set_or_return(
         :template_path,
         arg,
-        :kind_of => String
+        kind_of: String
       )
     end
-
   end
 end
 class Chef::Provider::NetdevGroup; end
