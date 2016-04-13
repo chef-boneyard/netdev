@@ -102,7 +102,7 @@ class Chef
         :speed,
         arg,
         kind_of: String,
-        equal_to: %w( auto 10m 100m 1g 10g 40g 56g 100g )
+        equal_to: %w( auto 100m 1g 10g 40g 56g 100g )
       )
     end
 

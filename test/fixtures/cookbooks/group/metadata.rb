@@ -1,2 +1,0 @@
-name    'group'
-depends 'netdev'
