@@ -37,7 +37,8 @@ module Netdev
           l2_ports: ::Junos::Ez::L2ports,
           ip_ports: ::Junos::Ez::IPports,
           vlans: ::Junos::Ez::Vlans,
-          lag_ports: ::Junos::Ez::LAGports
+          lag_ports: ::Junos::Ez::LAGports,
+          group: ::Junos::Ez::Group
         }
 
         KNOWN_RESOURCES.each_pair do |resource, provider_module|
@@ -179,7 +180,8 @@ module Netdev
           Chef::Log.debug("#{self} validated Junos candidate configuration")
         end
       rescue Netconf::RpcError => e
-        if rpc_errs = e.rsp.xpath('//rpc-error')
+        rpc_errs = e.rsp.xpath('//rpc-error')
+        if rpc_errs
           all_count = rpc_errs.count
           warn_count = rpc_errs.xpath('error-severity').select{ |err| err.text == 'warning' }.count
           if all_count - warn_count > 0
