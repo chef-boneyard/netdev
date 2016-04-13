@@ -54,10 +54,11 @@ class JunosCommitTransactionHandler < Chef::Handler
         end
       rescue Netconf::RpcError => e
         # Handle warning message seperately
-        if rpc_errs = e.rsp.xpath('//rpc-error')
+        rpc_errs = e.rsp.xpath('//rpc-error')
+        if rpc_errs
           all_count = rpc_errs.count
-          warn_count = rpc_errs.xpath('error-severity').select{ |err| err.text == 'warning' }.count
-          if all_count - warn_count > 0
+          warn_count = rpc_errs.xpath('error-severity').select { |err| err.text == 'warning' }.count
+          if (all_count - warn_count) > 0
             failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
             Chef::Log.fatal(failure_msg)
             raise(failure_msg)
