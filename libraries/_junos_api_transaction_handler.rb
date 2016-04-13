@@ -21,7 +21,7 @@ require_relative '_junos_api_transport'
 begin
   require ' net/netconf/exception'
 rescue LoadError
-  msg  = 'Could not load the junos-ez-stdlib gem...'
+  msg = 'Could not load the junos-ez-stdlib gem...'
   msg << 'ensure you are using the Chef for Junos packages'
   Chef::Log.debug msg
 end
@@ -31,7 +31,7 @@ end
 class JunosCommitTransactionHandler < Chef::Handler
   def report
     # Ensure handler is no-op in why-run mode and non-Junos platforms.
-    if (node['platform'] == 'junos') && !Chef::Config[:why_run]
+    if (node['platform'] == 'junos' || (node['platform_version'].include? 'JNPR')) && !Chef::Config[:why_run]
       begin
         # on successful Chef-runs commit the transaction
         if success?
@@ -53,9 +53,19 @@ class JunosCommitTransactionHandler < Chef::Handler
           Chef::Log.info('Rolled back pending Junos candidate configuration changes')
         end
       rescue Netconf::RpcError => e
-        failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
-        Chef::Log.fatal(failure_msg)
-        raise(failure_msg)
+        # Handle warning message seperately
+        rpc_errs = e.rsp.xpath('//rpc-error')
+        if rpc_errs
+          all_count = rpc_errs.count
+          warn_count = rpc_errs.xpath('error-severity').select { |err| err.text == 'warning' }.count
+          if (all_count - warn_count) > 0
+            failure_msg = "Could not complete Junos configuration transaction: \n\n#{e}"
+            Chef::Log.fatal(failure_msg)
+            raise(failure_msg)
+          elsif warn_count
+            Chef::Log.info(e.rsp.to_xml)
+          end
+        end
       end
     end
   end
