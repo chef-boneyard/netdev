@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'junos-ez-stdlib', git: 'https://github.com/Juniper/ruby-junos-ez-stdlib.git',
-                       tag: 'v0.2.0_20130819_1'
+                       tag: '1.0.0'
 
 group :lint do
   gem 'foodcritic', '~> 5.0'
