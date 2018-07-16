@@ -28,8 +28,8 @@ class Chef
     state_attrs   :links, :minimum_links, :lacp
 
     attr_accessor :active, :exists
-    alias_method  :active?, :active
-    alias_method  :exists?, :exists
+    alias active? active
+    alias exists? exists
 
     def initialize(name, run_context = nil)
       super
@@ -92,7 +92,7 @@ class Chef
         :lacp,
         arg,
         kind_of: String,
-        equal_to: %w( disable active passive )
+        equal_to: %w[disable active passive]
       )
     end
   end

@@ -28,8 +28,8 @@ class Chef
     state_attrs   :enable, :description, :mtu, :speed, :duplex
 
     attr_accessor :active, :exists
-    alias_method  :active?, :active
-    alias_method  :exists?, :exists
+    alias active? active
+    alias exists? exists
 
     def initialize(name, run_context = nil)
       super
@@ -102,7 +102,7 @@ class Chef
         :speed,
         arg,
         kind_of: String,
-        equal_to: %w( auto 10m 100m 1g 10g 40g 56g 100g )
+        equal_to: %w[auto 10m 100m 1g 10g 40g 56g 100g]
       )
     end
 
@@ -117,7 +117,7 @@ class Chef
         :duplex,
         arg,
         kind_of: String,
-        equal_to: %w( auto half full )
+        equal_to: %w[auto half full]
       )
     end
   end

@@ -28,8 +28,8 @@ class Chef
     state_attrs   :description, :untagged_vlan, :tagged_vlans, :vlan_tagging
 
     attr_accessor :active, :exists
-    alias_method  :active?, :active
-    alias_method  :exists?, :exists
+    alias active? active
+    alias exists? exists
 
     def initialize(name, run_context = nil)
       super

@@ -40,16 +40,16 @@ class Chef
       @current_resource.group_name(new_resource.group_name)
 
       # Check if apply-group is configured
-      apply_grp_config = Netdev::Junos::ApiTransport.instance.get_configuration{ |a_grp|
+      apply_grp_config = Netdev::Junos::ApiTransport.instance.get_configuration do |a_grp|
         a_grp.send('apply-groups')
-      }
+      end
       apply_grp = apply_grp_config.xpath("//apply-groups=\'#{new_resource.group_name}\'")
 
-      if (group = junos_client.managed_resource) && group.exists? && apply_grp
-        @current_resource.exists = true
-      else
-        @current_resource.exists = false
-      end
+      @current_resource.exists = if (group = junos_client.managed_resource) && group.exists? && apply_grp
+                                   true
+                                 else
+                                   false
+                                 end
       @file_path = "/var/tmp/#{new_resource.name}"
       @new_values = new_resource.state
       @current_values = current_resource.state
@@ -74,7 +74,7 @@ class Chef
       @new_values[:path] = @file_path
       format = @new_values[:template_path].split('/')[-1].split('.')
       if format[1] != 'erb'
-        unless %w(xml text set).include? format[1]
+        unless %w[xml text set].include? format[1]
           failure_msg = "Invalid format #{format[1]} in #{@new_values[:template_path]}. Valid format values: 'xml', 'text', 'set'.\n\n"
           Chef::Log.fatal(failure_msg)
           raise(failure_msg)
