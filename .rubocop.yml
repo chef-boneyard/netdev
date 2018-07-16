@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   Exclude:
     - vendor/**/*
@@ -13,7 +15,7 @@ Documentation:
   Enabled: false
 Encoding:
   Enabled: false
-Style/FileName:
+Naming/FileName:
   Enabled: false
 LineLength:
   Enabled: false

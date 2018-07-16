@@ -24,7 +24,7 @@ end
 # We cannot run Test Kitchen on Travis CI yet...
 namespace :travis do
   desc 'Run tests on Travis'
-  task ci: %w(style unit)
+  task ci: %w[style unit]
 end
 
 # The default rake task should just run it all

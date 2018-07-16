@@ -28,7 +28,7 @@ class Chef
     state_attrs   :template_path, :variables
 
     attr_accessor :exists
-    alias_method  :exists?, :exists
+    alias exists? exists
 
     def initialize(name, run_context = nil)
       super

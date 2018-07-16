@@ -39,7 +39,7 @@ module Netdev
           vlans: ::Junos::Ez::Vlans,
           lag_ports: ::Junos::Ez::LAGports,
           group: ::Junos::Ez::Group
-        }
+        }.freeze
 
         KNOWN_RESOURCES.each_pair do |resource, provider_module|
           # Create a child class for each logical resource type. This forces
@@ -62,7 +62,7 @@ module Netdev
 
       # The `Junos::Ez` providers expect certain values
       # to be symbolized or requests will fail.
-      VALUES_TO_SYMBOLIZE = %w( auto up down half full active passive disabled )
+      VALUES_TO_SYMBOLIZE = %w[auto up down half full active passive disabled].freeze
 
       attr_reader :resource_type
       attr_reader :resource_name
@@ -71,7 +71,7 @@ module Netdev
         unless KNOWN_RESOURCES.keys.include?(resource_type)
           error_message = "Invalid resource type :#{resource_type}."
           error_message << " Try one of: :#{KNOWN_RESOURCES.keys.join(', :')}"
-          fail error_message
+          raise error_message
         end
 
         @resource_type = resource_type
@@ -121,21 +121,20 @@ module Netdev
         new_values.each_pair do |property_name, new_value|
           old_value = current_values[property_name]
 
-          if !new_value.nil? && (old_value != new_value)
-            Chef::Log.debug("#{self} property '#{property_name}' has changed to '#{new_value}'")
+          next unless !new_value.nil? && (old_value != new_value)
+          Chef::Log.debug("#{self} property '#{property_name}' has changed to '#{new_value}'")
 
-            if managed_resource.properties.include?(property_name)
-              # junos-ez-stdlib prefers some values as symbols
-              managed_resource[property_name] = if VALUES_TO_SYMBOLIZE.include?(new_value)
-                                                  new_value.to_sym
-                                                else
-                                                  new_value
-                                                end
-            else
-              error_message = "#{self} don't know how to manage property :#{property_name}."
-              error_message << " Known properties include: :#{managed_resource.properties.join(', :')}"
-              fail ArgumentError, error_message
-            end
+          if managed_resource.properties.include?(property_name)
+            # junos-ez-stdlib prefers some values as symbols
+            managed_resource[property_name] = if VALUES_TO_SYMBOLIZE.include?(new_value)
+                                                new_value.to_sym
+                                              else
+                                                new_value
+                                              end
+          else
+            error_message = "#{self} don't know how to manage property :#{property_name}."
+            error_message << " Known properties include: :#{managed_resource.properties.join(', :')}"
+            raise ArgumentError, error_message
           end
         end
         # return Hash of updated properties
@@ -171,7 +170,7 @@ module Netdev
       def with_config_check(&_block)
         # ensure a transaction has been opened
         transport.start_transaction! unless transport.transaction_open?
-        Netconf::raise_on_warning = true
+        Netconf.raise_on_warning = true
 
         yield
 
@@ -183,7 +182,7 @@ module Netdev
         rpc_errs = e.rsp.xpath('//rpc-error')
         if rpc_errs
           all_count = rpc_errs.count
-          warn_count = rpc_errs.xpath('error-severity').select{ |err| err.text == 'warning' }.count
+          warn_count = rpc_errs.xpath('error-severity').select { |err| err.text == 'warning' }.count
           if all_count - warn_count > 0
             Chef::Log.error("#{self} error communicating with the Junos XML API...rolling back!")
             Chef::Log.error(format_rpc_error(e))
