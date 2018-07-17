@@ -5,8 +5,8 @@ gem 'junos-ez-stdlib', git: 'https://github.com/Juniper/ruby-junos-ez-stdlib.git
 
 group :lint do
   gem 'foodcritic', '~> 5.0'
-  gem 'rubocop', '~> 0.34'
   gem 'rake'
+  gem 'rubocop', '~> 0.49.0'
 end
 
 group :unit do

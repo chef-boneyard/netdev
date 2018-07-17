@@ -88,7 +88,7 @@ class JunosCommitTransactionHandler < Chef::Handler
   # handler so this method will return nil in that case.
   def extract_run_id(run_context)
     # Chef 11.8.2+ exposes a run_id to report handlers
-    if self.respond_to?(:run_id)
+    if respond_to?(:run_id)
       run_id
     # If we are running on older Chef we'll go trolling the event
     # handlers for a resource reporter (which generates a run ID).

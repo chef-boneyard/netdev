@@ -37,7 +37,7 @@ module Netdev
 
       attr_accessor :connection_open
       attr_accessor :transaction_open
-      alias_method  :transaction_open?, :transaction_open
+      alias transaction_open? transaction_open
 
       def_delegator :@transport, :[]
 

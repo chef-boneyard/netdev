@@ -21,7 +21,7 @@ describe Chef::Provider::NetdevLinkAggregationGroup::Junos do
 
   let(:managed_resource) do
     lag = double('lag', exists?: true)
-    allow(lag).to receive(:[]).with(:links) { %w( ge-0/0/1 ge-0/0/2 ) }
+    allow(lag).to receive(:[]).with(:links) { %w[ge-0/0/1 ge-0/0/2] }
     allow(lag).to receive(:[]).with(:minimum_links) { 2 }
     allow(lag).to receive(:[]).with(:lacp) { 'disabled' }
     allow(lag).to receive(:[]).with(:_active) { true }
@@ -30,7 +30,7 @@ describe Chef::Provider::NetdevLinkAggregationGroup::Junos do
 
   let(:new_resource) do
     new_resource = Chef::Resource::NetdevLinkAggregationGroup.new('ae0')
-    new_resource.links(%w( ge-0/0/1 ge-0/0/2 ))
+    new_resource.links(%w[ge-0/0/1 ge-0/0/2])
     new_resource.minimum_links(1)
     new_resource.lacp('disable')
     new_resource
