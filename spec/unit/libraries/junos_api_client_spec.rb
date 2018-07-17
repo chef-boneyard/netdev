@@ -52,7 +52,7 @@ describe Netdev::Junos::ApiClient do
       instance
     end
 
-    [:write!, :delete!, :activate!, :deactivate!].each do |action|
+    %i[write! delete! activate! deactivate!].each do |action|
       it "performs a config check after action: #{action}" do
         expect(transport).to receive(:commit?).once
         subject.send(action)
