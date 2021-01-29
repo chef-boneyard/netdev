@@ -1,9 +1,9 @@
 #
-# Cookbook Name:: netdev
+# Cookbook:: netdev
 # Resource:: interface
 #
-# Copyright 2013, Arista Networks
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2013, Arista Networks
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,13 +31,14 @@ class Chef
     alias active? active
     alias exists? exists
 
+    resource_name :netdev_l2_interface
+
+    default_action :create
+
     def initialize(name, run_context = nil)
       super
 
-      @resource_name = :netdev_l2_interface
-
       # Set default actions and allowed actions
-      @action = :create
       @allowed_actions.push(:create, :delete)
 
       # Set the name attribute and default attributes

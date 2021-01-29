@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: netdev
+# Cookbook:: netdev
 # Provider:: group
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,9 +31,6 @@ class Chef
     #
     # This provider supports why-run mode.
     #
-    def whyrun_supported?
-      true
-    end
 
     def load_current_resource
       @current_resource = Chef::Resource::NetdevGroup.new(new_resource.name)
@@ -74,7 +71,7 @@ class Chef
       @new_values[:path] = @file_path
       format = @new_values[:template_path].split('/')[-1].split('.')
       if format[1] != 'erb'
-        unless %w[xml text set].include? format[1]
+        unless %w(xml text set).include? format[1]
           failure_msg = "Invalid format #{format[1]} in #{@new_values[:template_path]}. Valid format values: 'xml', 'text', 'set'.\n\n"
           Chef::Log.fatal(failure_msg)
           raise(failure_msg)

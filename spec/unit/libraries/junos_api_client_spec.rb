@@ -1,5 +1,5 @@
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ describe Netdev::Junos::ApiClient do
       instance
     end
 
-    %i[write! delete! activate! deactivate!].each do |action|
+    %i(write! delete! activate! deactivate!).each do |action|
       it "performs a config check after action: #{action}" do
         expect(transport).to receive(:commit?).once
         subject.send(action)
