@@ -1,5 +1,5 @@
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ describe Chef::Provider::NetdevL2Interface::Junos do
     port = double('port', exists?: true)
     allow(port).to receive(:[]).with(:description) { 'blahblahblah' }
     allow(port).to receive(:[]).with(:untagged_vlan) { 'default' }
-    allow(port).to receive(:[]).with(:tagged_vlans) { %w[chef-test] }
+    allow(port).to receive(:[]).with(:tagged_vlans) { %w(chef-test) }
     allow(port).to receive(:[]).with(:vlan_tagging) { true }
     allow(port).to receive(:[]).with(:_active) { true }
     port
@@ -31,7 +31,7 @@ describe Chef::Provider::NetdevL2Interface::Junos do
 
   let(:new_resource) do
     new_resource = Chef::Resource::NetdevL2Interface.new('ge-0/0/0')
-    new_resource.tagged_vlans(%w[chef-test])
+    new_resource.tagged_vlans(%w(chef-test))
     new_resource.vlan_tagging(true)
     new_resource
   end

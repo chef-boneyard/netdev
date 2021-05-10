@@ -1,5 +1,5 @@
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 require 'chefspec'
 
 # load all shared examples and shared contexts
-Dir[File.expand_path('../support/**/*.rb', __FILE__)].each do |file|
+Dir[File.expand_path('support/**/*.rb', __dir__)].each do |file|
   require(file)
 end
 
 # load all library files for easy mocking
-libs = File.expand_path('../../libraries', __FILE__)
+libs = File.expand_path('../libraries', __dir__)
 $LOAD_PATH.unshift(libs) unless $LOAD_PATH.include?(libs)
 Dir[File.join(libs, '*.rb')].each do |lib|
   require File.basename(lib, '.rb')
