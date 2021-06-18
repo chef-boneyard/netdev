@@ -1,9 +1,9 @@
 #
-# Cookbook Name:: netdev
+# Cookbook:: netdev
 # Resource:: JUNOS apply group
 #
-# Copyright 2014, Chef Software, Inc.
-# Copyright 2015, Juniper Network.
+# Copyright:: 2014, Chef Software, Inc.
+# Copyright:: 2015, Juniper Network.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,13 +30,14 @@ class Chef
     attr_accessor :exists
     alias exists? exists
 
+    resource_name :netdev_group
+
+    default_action :create
+
     def initialize(name, run_context = nil)
       super
 
-      @resource_name = :netdev_group
-
       # Set default actions and allowed actions
-      @action = :create
       @allowed_actions.push(:create, :delete)
 
       # Set the name attribute and default attributes
@@ -87,4 +88,5 @@ class Chef
     end
   end
 end
+
 class Chef::Provider::NetdevGroup; end

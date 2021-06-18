@@ -1,5 +1,5 @@
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ describe Chef::Provider::NetdevGroup::Junos do
   let(:new_resource) do
     new_resource = Chef::Resource::NetdevGroup.new('service_group')
     new_resource.template_path('services.set.erb')
-    new_resource.variables(services: node[:netdev][:services])
+    new_resource.variables(services: node['netdev']['services'])
     new_resource
   end
 

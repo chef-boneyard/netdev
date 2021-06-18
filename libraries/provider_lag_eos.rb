@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: netdev
+# Cookbook:: netdev
 # Provider:: lag
 #
-# Copyright 2013, Arista Networks
+# Copyright:: 2013, Arista Networks
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,9 +30,6 @@ class Chef
     #
     # This provider supports why-run mode.
     #
-    def whyrun_supported?
-      true
-    end
 
     def load_current_resource
       @current_resource = Chef::Resource::NetdevLinkAggregationGroup.new(new_resource.name)

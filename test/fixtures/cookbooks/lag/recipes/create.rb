@@ -1,5 +1,5 @@
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ netdev_l2_interface 'ge-0/0/2' do
 end
 
 netdev_lag 'ae0' do
-  links %w[ge-0/0/1 ge-0/0/2]
+  links %w(ge-0/0/1 ge-0/0/2)
   minimum_links 1
   lacp 'disable'
   action :create

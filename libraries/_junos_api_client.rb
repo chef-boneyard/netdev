@@ -1,5 +1,5 @@
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ module Netdev
           ip_ports: ::Junos::Ez::IPports,
           vlans: ::Junos::Ez::Vlans,
           lag_ports: ::Junos::Ez::LAGports,
-          group: ::Junos::Ez::Group
+          group: ::Junos::Ez::Group,
         }.freeze
 
         KNOWN_RESOURCES.each_pair do |resource, provider_module|
@@ -62,12 +62,14 @@ module Netdev
 
       # The `Junos::Ez` providers expect certain values
       # to be symbolized or requests will fail.
-      VALUES_TO_SYMBOLIZE = %w[auto up down half full active passive disabled].freeze
+      VALUES_TO_SYMBOLIZE = %w(auto up down half full active passive disabled).freeze
 
       attr_reader :resource_type
       attr_reader :resource_name
 
-      def initialize(resource_type, resource_name)
+      resource_name resource_name
+
+      def initialize(resource_type, _resource_name)
         unless KNOWN_RESOURCES.keys.include?(resource_type)
           error_message = "Invalid resource type :#{resource_type}."
           error_message << " Try one of: :#{KNOWN_RESOURCES.keys.join(', :')}"
@@ -75,7 +77,6 @@ module Netdev
         end
 
         @resource_type = resource_type
-        @resource_name = resource_name
       end
 
       # Writes managed resource to the candidate configuration.
@@ -144,9 +145,9 @@ module Netdev
       def managed_resource
         @managed_resource ||= begin
           transport.send(resource_type)[resource_name]
-        rescue Netconf::RpcError => e
-          Chef::Log.debug("Managed Resource #{resource_name} not found: #{e}")
-          nil
+                              rescue Netconf::RpcError => e
+                                Chef::Log.debug("Managed Resource #{resource_name} not found: #{e}")
+                                nil
         end
       end
 
@@ -217,7 +218,7 @@ module Netdev
           # fall back to ugly xml
         end
 
-        error_msg = <<-MSG
+        <<-MSG
 
   JUNOS XML REQUEST:
 
@@ -227,8 +228,6 @@ module Netdev
 
   #{response.to_xml}
         MSG
-
-        error_msg
       end
     end
   end

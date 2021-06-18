@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: netdev
+# Cookbook:: netdev
 # Provider:: l2_interface
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,9 +31,6 @@ class Chef
     #
     # This provider supports why-run mode.
     #
-    def whyrun_supported?
-      true
-    end
 
     def load_current_resource
       @current_resource = Chef::Resource::NetdevL2Interface.new(new_resource.name)

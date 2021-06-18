@@ -1,5 +1,5 @@
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 include_recipe 'vlan::create'
 
 netdev_l2_interface 'ge-0/0/0' do
-  tagged_vlans %w[chef-test]
+  tagged_vlans %w(chef-test)
   vlan_tagging true
   action :create
 end
